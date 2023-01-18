@@ -17,8 +17,11 @@
   <title>Register</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="{% static 'css/theme.min.css' %}">
-  
-
+  <style>
+    img:hover {
+      cursor: pointer;
+    }
+  </style>
 
   </head>
   <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
@@ -49,8 +52,12 @@
               {% csrf_token %}
               <div class="col-12">
               <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Public Address</label>
-                <input name="public_key" required type="text" class="form-control form-control-lg" id="public_key" aria-describedby="emailHelp">
+                <label for="exampleInputEmail1" class="form-label">Public Address
+                  <img id ="verified_icon" style="margin-bottom: 3%;" src="{% static 'images/unverified_icon.png' %}"
+                  onclick="verify_account()">
+                </label>
+                <input name="public_key" required type="text" class="form-control form-control-lg" 
+                id="public_key" aria-describedby="emailHelp" onChange="reverify()">
                 <div id="emailHelp" class="form-text">Please enter your ethereum wallet public address</div>
               </div>
               <div class="mb-3">
@@ -58,6 +65,7 @@
                 <input name="email" required type="email" class="form-control form-control-lg" id="exampleInputEmail1" aria-describedby="emailHelp">
                 <div id="emailHelp" class="form-text">Please enter your email address</div>
               </div>
+              <input hidden name="verified" value="false" id="verified">
               <button type="submit" class="btn btn-white btn-xl mb-4">Register</button>
               <div id="emailHelp" class="form-text">Already registered?
                 <a href="{% url 'login' %}">Login now</a>

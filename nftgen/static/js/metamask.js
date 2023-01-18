@@ -68,14 +68,19 @@ function getMetamaskAccounts()
     })
 }
 
+const reverify = (e) =>
+{
+    document.getElementById('verified_icon')
+    .src="/static/images/unverified_icon.png";
+    $("#verified").val("false")
+}
 
-
-const verify_address_owner = (e) =>
+const verify_account = (e) =>
 {
     try
     {
-        console.log('hi')
         const nonce = generateNonce()
+        console.log('Nonce : ',nonce)
         const public_address= document.getElementById('public_key').value
         sign_message(nonce,public_address)
     }
@@ -90,7 +95,9 @@ function validate_user(public_address, validation_address)
     console.log('valid')
     if (public_address.toLowerCase()===validation_address)
     {
-        console.log('valid')
+        document.getElementById('verified_icon')
+        .src="/static/images/verified_icon.png";
+        $("#verified").val("true")
     }
     else
     {
@@ -110,6 +117,7 @@ function recover_address(nonce, signature, public_address)
         else
         {
             const validation_address=result
+            console.log('Recovered Address : ',validation_address)
             validate_user(public_address, validation_address);
         }
     })
@@ -127,6 +135,7 @@ function sign_message(nonce,public_address)
         else
         {
             const signature=result
+            console.log('Signature : ',signature)
             recover_address(nonce,signature,public_address);
         }
     })

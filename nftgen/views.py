@@ -19,7 +19,11 @@ def register_view(request):
     else:
         public_key = request.POST.get('public_key')
         email = request.POST.get('email')
+        verified = request.POST.get('verified')
         errors = []
+        if verified == 'false':
+            errors.append('Ethereum address NOT verified...')
+            return render(request, 'register.html', {'errors': errors})
 
         try:
             eth_address = get_crypto_address('ETH', public_key)
@@ -28,7 +32,7 @@ def register_view(request):
                                                 email=email,
                                                 password=email)
             except:
-                errors.append('Entered public address already exists..')
+                errors.append('Entered public address already exists...')
         except:
             errors.append(
                 'Entered public address is NOT a valid ethereum address...')
