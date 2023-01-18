@@ -33,6 +33,11 @@
   </li> -->
   <style>
     /* inter-300 - latin */
+
+    .dropdown-menu a:hover {
+      background-color: black;
+    }
+
     @font-face {
       font-family: 'Inter';
       font-style: normal;
@@ -125,8 +130,24 @@
           </a>
         </li>
         {% endif %}
-
       </ul>
+      
+      {% if user.is_authenticated %}
+      <div class="dropdown">
+        <a class="nav-link fs-5 dropdown-toggle" type="button" id="btnDropdownDemo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+        style="color: grey;">
+          {{request.user.email}}
+        </a>
+      
+        <div class="dropdown-menu" aria-labelledby="btnDropdownDemo"
+        style="color:white; background-color: black;">
+          <a type="button" class="dropdown-item nav-item">Digital Art Generator</a>
+          <a type="button" class="dropdown-item">NFT Generator</a>
+          <a type="button" class="dropdown-item">Profile</a>
+        </div>
+      </div>
+      {% endif %}
+
     </div>
   </nav>
 
