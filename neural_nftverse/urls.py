@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from nftgen.views import landing_view, login_view
+from nftgen.views import landing_view, login_view, register_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', landing_view, name='landing'),
     path('login/', login_view, name='login'),
+    path('register/', register_view, name='register'),
 ]

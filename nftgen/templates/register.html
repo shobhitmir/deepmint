@@ -14,7 +14,7 @@
   <meta name="author" content="Holger Koenemann">
   <meta name="generator" content="Eleventy v2.0.0">
   <meta name="HandheldFriendly" content="true">
-  <title>Login</title>
+  <title>Register</title>
   <link rel="stylesheet" href="{% static 'css/theme.min.css' %}">
 
 
@@ -38,7 +38,7 @@
 
             </header>
             <main class="mb-auto col-12">
-              <h2>Login to existing account</h2>
+              <h2>Create a new account</h2>
             
               
             <form class="row">
@@ -48,7 +48,12 @@
                 <input type="email" class="form-control form-control-lg bg-gray-800 border-dark" id="exampleInputEmail1" aria-describedby="emailHelp">
                 <div id="emailHelp" class="form-text">Please enter your ethereum wallet public address</div>
               </div>
-              <button type="submit" class="btn btn-white btn-xl mb-4">Login</button>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Email Address</label>
+                <input type="email" class="form-control form-control-lg bg-gray-800 border-dark" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <div id="emailHelp" class="form-text">Please enter your email address</div>
+              </div>
+              <button type="submit" class="btn btn-white btn-xl mb-4">Register</button>
             </div>
             </form>
 
