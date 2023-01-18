@@ -15,11 +15,15 @@
   <meta name="generator" content="Eleventy v2.0.0">
   <meta name="HandheldFriendly" content="true">
   <title>Register</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="{% static 'css/theme.min.css' %}">
+  
 
 
   </head>
-
+  <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/web3.min.js' %}"></script>
+  <script src="{% static 'js/metamask.js' %}"></script>
   <body class="d-flex h-100 w-100 bg-black text-white" data-bs-spy="scroll" data-bs-target="#navScroll">
 
     <div class="h-100 container-fluid">
@@ -41,22 +45,31 @@
               <h2>Create a new account</h2>
             
               
-            <form class="row">
+            <form class="row" method="post">
+              {% csrf_token %}
               <div class="col-12">
               <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Public Address</label>
-                <input type="email" class="form-control form-control-lg bg-gray-800 border-dark" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <input name="public_key" required type="text" class="form-control form-control-lg" id="public_key" aria-describedby="emailHelp">
                 <div id="emailHelp" class="form-text">Please enter your ethereum wallet public address</div>
               </div>
               <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Email Address</label>
-                <input type="email" class="form-control form-control-lg bg-gray-800 border-dark" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <input name="email" required type="email" class="form-control form-control-lg" id="exampleInputEmail1" aria-describedby="emailHelp">
                 <div id="emailHelp" class="form-text">Please enter your email address</div>
               </div>
               <button type="submit" class="btn btn-white btn-xl mb-4">Register</button>
-            </div>
+              <div id="emailHelp" class="form-text">Already registered?
+                <a href="{% url 'login' %}">Login now</a>
+              </div>
             </form>
+            {% for error in errors %}
+    
+                <div class="alert alert-danger" style="margin-top: 5%;">
+                      {{ error }}
+                </div>
 
+            {% endfor %}
             </main>
           </div>
           

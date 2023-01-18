@@ -1,5 +1,7 @@
 from django.shortcuts import render
-
+from django.shortcuts import redirect
+from django.contrib.auth.models import User
+from cryptoaddress import get_crypto_address
 # Create your views here.
 
 
@@ -12,4 +14,26 @@ def login_view(request):
 
 
 def register_view(request):
-    return render(request, 'register.html')
+    if request.method == 'GET':
+        return render(request, 'register.html')
+    else:
+        public_key = request.POST.get('public_key')
+        email = request.POST.get('email')
+        errors = []
+
+        try:
+            eth_address = get_crypto_address('ETH', public_key)
+            try:
+                user = User.objects.create_user(username=public_key,
+                                                email=email,
+                                                password=email)
+            except:
+                errors.append('Entered public address already exists..')
+        except:
+            errors.append(
+                'Entered public address is NOT a valid ethereum address...')
+
+        if len(errors) == 0:
+            return redirect(login_view)
+        else:
+            return render(request, 'register.html', {'errors': errors})
