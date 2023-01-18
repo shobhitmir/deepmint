@@ -2,13 +2,18 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from cryptoaddress import get_crypto_address
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 # Create your views here.
 
 
 def landing_view(request):
     return render(request, 'landing.html')
+
+
+def logout_view(request):
+    logout(request)
+    return redirect(landing_view)
 
 
 def login_view(request):

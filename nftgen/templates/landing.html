@@ -98,11 +98,19 @@
             Content
           </a>
         </li>
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link fs-5" href="{% url 'logout' %}" aria-label="A system message page">
+            Logout
+          </a>
+        </li>
+        {% else %}
         <li class="nav-item">
           <a class="nav-link fs-5" href="{% url 'login' %}" aria-label="A system message page">
             Login
           </a>
         </li>
+        {% endif %}
 
       </ul>
     </div>
