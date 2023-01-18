@@ -14,12 +14,19 @@
   <meta name="author" content="Holger Koenemann">
   <meta name="generator" content="Eleventy v2.0.0">
   <meta name="HandheldFriendly" content="true">
-  <title>Login</title>
+  <title>Register</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="{% static 'css/theme.min.css' %}">
-
+  <style>
+    img:hover {
+      cursor: pointer;
+    }
+  </style>
 
   </head>
-
+  <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/web3.min.js' %}"></script>
+  <script src="{% static 'js/metamask.js' %}"></script>
   <body class="d-flex h-100 w-100 bg-black text-white" data-bs-spy="scroll" data-bs-target="#navScroll">
 
     <div class="h-100 container-fluid">
@@ -41,20 +48,31 @@
               <h2>Login to existing account</h2>
             
               
-            <form class="row">
+            <form class="row" method="post">
+              {% csrf_token %}
               <div class="col-12">
               <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Public Address</label>
-                <input type="email" class="form-control form-control-lg bg-gray-800 border-dark" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <label for="exampleInputEmail1" class="form-label">Public Address
+                  <img id ="verified_icon" style="margin-bottom: 3%;" src="{% static 'images/unverified_icon.png' %}"
+                  onclick="verify_account()">
+                </label>
+                <input name="public_key" required type="text" class="form-control form-control-lg" 
+                id="public_key" aria-describedby="emailHelp" onChange="reverify()">
                 <div id="emailHelp" class="form-text">Please enter your ethereum wallet public address</div>
               </div>
+              <input hidden name="verified" value="false" id="verified">
               <button type="submit" class="btn btn-white btn-xl mb-4">Login</button>
-            </div>
-            <div id="emailHelp" class="form-text">Do not have account?
-              <a href="{% url 'register' %}">Register now</a>
-            </div>
+              <div id="emailHelp" class="form-text">Do not have an account?
+                <a href="{% url 'register' %}">Register now</a>
+              </div>
             </form>
+            {% for error in errors %}
+    
+                <div class="alert alert-danger" style="margin-top: 5%;">
+                      {{ error }}
+                </div>
 
+            {% endfor %}
             </main>
           </div>
           
