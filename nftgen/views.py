@@ -81,3 +81,7 @@ def register_view(request):
             return redirect(landing_view)
         else:
             return render(request, 'register.html', {'errors': errors})
+
+
+def artgen_view(request):
+    return render(request, 'artgen.html')

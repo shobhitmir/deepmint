@@ -141,7 +141,8 @@
       
         <div class="dropdown-menu" aria-labelledby="btnDropdownDemo"
         style="color:white; background-color: black;">
-          <a type="button" class="dropdown-item nav-item">Digital Art Generator</a>
+          <a type="button" href="{% url 'artgen' %}" class="dropdown-item nav-item"
+          style="color:white; background-color: black; text-decoration: none;">Digital Art Generator</a>
           <a type="button" class="dropdown-item">NFT Generator</a>
           <a type="button" class="dropdown-item">Profile</a>
         </div>
@@ -217,7 +218,7 @@
             <h3 class="pt-5">Digital Art Generator</h3>
             <p class="text-secondary">Convert a text to an image easily using this tool.
                 The text provides a description of the desired image and accordingly digital art is generated<br>
-              <a href="#" class="link-fancy link-fancy-light me-2">Tell me more</a>
+              <a href="{% url 'artgen' %}" class="link-fancy link-fancy-light me-2">Explore</a>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                 class="bi bi-arrow-right-circle" viewBox="0 0 16 16">
                 <path fill-rule="evenodd"

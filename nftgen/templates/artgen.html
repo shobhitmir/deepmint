@@ -1,0 +1,131 @@
+{% load static %}
+
+<!doctype html>
+<html class="h-100" lang="en">
+
+  <head>
+      <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+  <meta name="description" content="A well made and handcrafted Bootstrap 5 template">
+  <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="img/favicon.png">
+  <meta name="author" content="Holger Koenemann">
+  <meta name="generator" content="Eleventy v2.0.0">
+  <meta name="HandheldFriendly" content="true">
+  <title>Art Generator</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/theme.min.css' %}">
+  <style>
+    img:hover {
+      cursor: pointer;
+    }
+    #initimg:hover {
+      cursor: pointer;
+    }
+    #previewimg {
+      object-fit: contain;
+      width: 50%;
+      height: 30%;
+    }
+    
+    #additional_fields:hover
+    {
+      cursor: pointer;
+    }
+  </style>
+
+  </head>
+  <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/artgen.js' %}"></script>
+  <body class="d-flex h-100 w-100 bg-black text-white" data-bs-spy="scroll" data-bs-target="#navScroll">
+
+    <div class="h-100 container-fluid">
+      <div class="h-100 row d-flex align-items-stretch">
+        
+          <div class="col-12 col-md-7 col-lg-6 col-xl-5 d-flex align-items-start flex-column px-vw-5">
+          
+            <header class="mb-auto py-vh-2 col-12">
+              <a class="navbar-brand pe-md-4 fs-4 col-12 col-md-auto text-center" href="{% url 'landing' %}">
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-stack" viewBox="0 0 16 16">
+    <path d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.598.598 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.598.598 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.598.598 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535L7.733.063z"/>
+    <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.598.598 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.659z"/>
+  </svg>
+  <span class="ms-md-1 mt-1 fw-bolder me-md-5">Neural NFTVerse</span>
+</a>
+
+            </header>
+            <main class="mb-auto col-12">
+              <h2>Digital Art Generator</h2>
+              <hr style="border: 1px solid white;">
+              
+            <form class="row" method="post">
+              {% csrf_token %}
+              <div class="col-12">
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Prompt</label>
+                <input name="prompt" required type="text" class="form-control form-control-lg" 
+                id="prompt" aria-describedby="emailHelp">
+                <div id="emailHelp" class="form-text">Please enter description of desired image</div>
+              </div>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Accuracy</label><br>
+                <input name="accuracy" type="radio" 
+                id="accuracy" aria-describedby="emailHelp" value="Low">
+                <label for="Low">Low (5 seconds)</label><br>
+                <input name="accuracy" type="radio" 
+                id="accuracy" aria-describedby="emailHelp" value="Medium" checked>
+                <label for="Medium">Medium (15 seconds)</label><br>
+                <input name="accuracy" type="radio" 
+                id="accuracy" aria-describedby="emailHelp" value="High">
+                <label for="High">High (30 seconds)</label><br>
+                <div id="emailHelp" class="form-text">Please select how realistic the digital art should be</div>
+              </div>
+              <hr style="border: 1px solid white;">
+              <a id="additional_fields" onclick="expand()"><h5>Additional Fields</h5></a>
+            <div style="margin-top: 3%;" id="extra">
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Initial Image (Optional)
+                  <img id ="see_icon" src="{% static 'images/eye_icon.png' %}"
+                  onclick="showimg()">
+                  <img hidden id = "previewimg" style="margin-top: 3%; margin-bottom: 3%;">
+                </label>
+                <input name="initimg" type="file" class="form-control form-control-lg" 
+                id="initimg" aria-describedby="emailHelp" accept="image/*"
+                onChange="changeimg()">
+                <div id="emailHelp" class="form-text">Please upload an initial image to modify</div>
+              </div>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Initial Image Strength (Optional)</label>
+                <input name="img_strength" type="number" class="form-control form-control-lg" 
+                id="img_strength" aria-describedby="emailHelp" 
+                min="0" max="1" step="0.1" value="0">
+                <div id="emailHelp" class="form-text">Please enter initial image influence</div>
+              </div>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Seed (Optional)</label>
+                <input name="seed" type="number" class="form-control form-control-lg" 
+                id="seed" aria-describedby="emailHelp" min="0">
+                <div id="emailHelp" class="form-text">Please enter a seed for art generation</div>
+              </div>
+            </div>
+            <hr style="border: 1px solid white;">
+              <button type="submit" class="btn btn-white btn-xl mb-4">Generate</button>
+            </form>
+            {% for error in errors %}
+    
+                <div class="alert alert-danger" style="margin-top: 5%;">
+                      {{ error }}
+                </div>
+
+            {% endfor %}
+            </main>
+          </div>
+
+            <div class="col-12 col-md-5 col-lg-6 col-xl-7 gradient"></div>
+          
+        </div>
+
+      </div></body>
+    </html>
