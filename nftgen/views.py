@@ -84,4 +84,8 @@ def register_view(request):
 
 
 def artgen_view(request):
-    return render(request, 'artgen.html')
+    if request.method == 'GET':
+        return render(request, 'artgen.html')
+    else:
+        print(request.POST)
+        return render(request, 'artgen.html')

@@ -18,27 +18,27 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="{% static 'css/theme.min.css' %}">
   <style>
-    img:hover {
-      cursor: pointer;
-    }
     #initimg:hover {
       cursor: pointer;
     }
     #previewimg {
-      object-fit: contain;
-      width: 50%;
-      height: 30%;
-    }
-    
-    #additional_fields:hover
-    {
-      cursor: pointer;
+      object-fit: cover;
+      width: 100px;
+      height: 100px;
     }
   </style>
 
   </head>
   <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
-  <script type="text/javascript" src="{% static 'js/artgen.js' %}"></script>
+  <script type="text/javascript">
+    const changeimg = (e) =>
+    {
+        const img = document.getElementById('initimg').files[0]
+        const bgUrl = URL.createObjectURL(img)
+        document.getElementById('previewimg').src = bgUrl
+        document.getElementsByClassName('gradient')[0].style.backgroundImage = `url(${bgUrl})`
+    }
+  </script>
   <body class="d-flex h-100 w-100 bg-black text-white" data-bs-spy="scroll" data-bs-target="#navScroll">
 
     <div class="h-100 container-fluid">
@@ -60,59 +60,34 @@
               <h2>Digital Art Generator</h2>
               <hr style="border: 1px solid white;">
               
-            <form class="row" method="post">
-              {% csrf_token %}
+            <div class="row">
               <div class="col-12">
               <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Prompt</label>
                 <input name="prompt" required type="text" class="form-control form-control-lg" 
-                id="prompt" aria-describedby="emailHelp">
+                id="prompt" aria-describedby="emailHelp" form="artgenform">
                 <div id="emailHelp" class="form-text">Please enter description of desired image</div>
               </div>
               <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Accuracy</label><br>
-                <input name="accuracy" type="radio" 
+                <input name="accuracy" type="radio" form="artgenform"
                 id="accuracy" aria-describedby="emailHelp" value="Low">
                 <label for="Low">Low (5 seconds)</label><br>
-                <input name="accuracy" type="radio" 
+                <input name="accuracy" type="radio" form="artgenform" 
                 id="accuracy" aria-describedby="emailHelp" value="Medium" checked>
                 <label for="Medium">Medium (15 seconds)</label><br>
-                <input name="accuracy" type="radio" 
+                <input name="accuracy" type="radio" form="artgenform"
                 id="accuracy" aria-describedby="emailHelp" value="High">
                 <label for="High">High (30 seconds)</label><br>
                 <div id="emailHelp" class="form-text">Please select how realistic the digital art should be</div>
               </div>
-              <hr style="border: 1px solid white;">
-              <a id="additional_fields" onclick="expand()"><h5>Additional Fields</h5></a>
-            <div style="margin-top: 3%;" id="extra">
               <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Initial Image (Optional)
-                  <img id ="see_icon" src="{% static 'images/eye_icon.png' %}"
-                  onclick="showimg()">
-                  <img hidden id = "previewimg" style="margin-top: 3%; margin-bottom: 3%;">
-                </label>
-                <input name="initimg" type="file" class="form-control form-control-lg" 
-                id="initimg" aria-describedby="emailHelp" accept="image/*"
-                onChange="changeimg()">
-                <div id="emailHelp" class="form-text">Please upload an initial image to modify</div>
-              </div>
-              <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Initial Image Strength (Optional)</label>
-                <input name="img_strength" type="number" class="form-control form-control-lg" 
-                id="img_strength" aria-describedby="emailHelp" 
-                min="0" max="1" step="0.1" value="0">
-                <div id="emailHelp" class="form-text">Please enter initial image influence</div>
-              </div>
-              <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Seed (Optional)</label>
+                <label for="exampleInputEmail1" class="form-label">Seed</label>
                 <input name="seed" type="number" class="form-control form-control-lg" 
-                id="seed" aria-describedby="emailHelp" min="0">
+                id="seed" aria-describedby="emailHelp" min="0" form="artgenform">
                 <div id="emailHelp" class="form-text">Please enter a seed for art generation</div>
               </div>
             </div>
-            <hr style="border: 1px solid white;">
-              <button type="submit" class="btn btn-white btn-xl mb-4">Generate</button>
-            </form>
             {% for error in errors %}
     
                 <div class="alert alert-danger" style="margin-top: 5%;">
@@ -122,10 +97,39 @@
             {% endfor %}
             </main>
           </div>
-
-            <div class="col-12 col-md-5 col-lg-6 col-xl-7 gradient"></div>
-          
+          <div class="col-12 col-md-7 col-lg-6 col-xl-5 d-flex align-items-start flex-column px-vw-5">
+            <header class="mb-auto py-vh-2 col-12">
+              <a class="navbar-brand pe-md-4 fs-4 col-12 col-md-auto text-center">
+              </a>
+            </header>
+            <main class="mb-auto col-12" style="margin-top: 4%;">
+              <h2>Additional Fields</h2>
+              <hr style="border: 1px solid white;">
+              <form class="row" method="post" id="artgenform">
+              {% csrf_token %}
+              <div class="col-12">
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label">Initial Image (Optional)</label>
+                  <br>
+                  <img src="{% static 'images/noise.png' %}" id = "previewimg"
+                  style="margin-bottom: 4%;">
+                  <input name="initimg" type="file" class="form-control form-control-lg" 
+                  id="initimg" aria-describedby="emailHelp" accept="image/*"
+                  onChange="changeimg()">
+                  <div id="emailHelp" class="form-text">Please upload an initial image to modify</div>
+                </div>
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label">Initial Image Strength (Optional)</label>
+                  <input name="img_strength" type="number" class="form-control form-control-lg" 
+                  id="img_strength" aria-describedby="emailHelp" 
+                  min="0" max="1" step="0.1" value="0">
+                  <div id="emailHelp" class="form-text">Please enter initial image influence</div>
+                </div>
+                <button type="submit" class="btn btn-white btn-xl mb-4">Generate</button>
+              </div>
+            </form>
+            </main>
+          </div>
         </div>
-
       </div></body>
     </html>
