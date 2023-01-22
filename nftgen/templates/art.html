@@ -15,16 +15,7 @@
   <meta name="generator" content="Eleventy v2.0.0">
   <meta name="HandheldFriendly" content="true">
   <title>Art Generator</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <style>
-    #initimg:hover {
-      cursor: pointer;
-    }
-    #previewimg {
-      object-fit: cover;
-      width: 100px;
-      height: 100px;
-    }
     body {
       padding-top: 60px;
       background-image: 
@@ -32,16 +23,8 @@
       rgba(0, 0, 0, 0.6),
       rgba(0, 0, 0, 0.6)
     ),
-      url('../static/images/bg.jpg');
-      background-repeat: repeat-y;
+      url('../static/images/art_bg.jpg');
       background-size: cover;
-    }
-    label {
-      color:white;
-      font-weight: bolder;
-    }
-    .form-text {
-      color: lightgray !important;
     }
 
     .navbar {
@@ -51,7 +34,53 @@
     .dropdown-menu a:hover {
       background-color: black;
     }
+    
+    figcaption {
+      color:white !important;
+      font-weight: bolder;
+    }
+
+    .figure{
+      object-fit: contain !important;
+      height: 350px !important;
+      width: 350px !important;
+    }
+
+    #init_img {
+      object-fit: cover;
+      height: 230px;
+      width: 230px;
+    }
+
+    .btn-group
+    {
+      border-radius: 12px;
+    }
+    .btn
+    {
+      padding-left: 20px !important;
+      padding-right: 20px !important;
+    }
+    .btn:hover
+    {
+      font-weight: bold;
+    }
+    .card
+    {
+      background-color: rgba(245,245,245,0.0) !important;
+    }
+    .list-group-item
+    {
+      background-color: rgba(245,245,245,0.0) !important;
+      color: white;
+    }
+    .card-subtitle {
+      background-color: rgba(245,245,245,0.0) !important;
+      color: white;
+    }
+
   </style>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="{% static 'css/theme.min.css' %}">
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -59,32 +88,23 @@
 
   </head>
   <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
-  <script type="text/javascript">
-    const changeimg = (e) =>
-    {
-        const img = document.getElementById('initimg').files[0]
-        const bgUrl = URL.createObjectURL(img)
-        document.getElementById('previewimg').src = bgUrl
-        document.getElementsByClassName('gradient')[0].style.backgroundImage = `url(${bgUrl})`
-    }
-  </script>
-  <body class="d-flex h-100 w-100 bg-black text-white" data-bs-spy="scroll" data-bs-target="#navScroll">
+  <body class="d-flex h-100 w-100 bg-black" data-bs-spy="scroll" data-bs-target="#navScroll">
 
     <div class="h-100 container-fluid">
       <div class="h-100 row d-flex align-items-stretch">
         
           <div class="col-12 col-md-7 col-lg-6 col-xl-5 d-flex align-items-start flex-column px-vw-5">
-            <nav id="navScroll" class="navbar navbar-dark bg-black fixed-top px-vw-5" tabindex="0">
+            <nav id="navScroll" class="navbar navbar-dark bg-black fixed-top" tabindex="0">
               <div class="container">
-                <a class="navbar-brand mx-auto mb-2 mb-lg-0 list-group list-group-horizontal" href="{% url 'artgen' %}">
+                <a class="navbar-brand mx-auto mb-2 mb-lg-0 list-group list-group-horizontal" href="{% url 'art' %}">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-stack"
-                    viewBox="0 0 16 16" style="margin-top: 4%; margin-right: 1%;">
+                    viewBox="0 0 16 16" style="margin-top: 7%; margin-right: 1%;">
                     <path
                       d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.598.598 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.598.598 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.598.598 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535L7.733.063z" />
                     <path
                       d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.598.598 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.659z" />
                   </svg>
-                  <span class="ms-md-1 mt-1 fw-bolder me-md-5">Digital Art Generator</span>
+                  <span class="ms-md-1 mt-1 fw-bolder me-md-5">Digital Art</span>
                 </a>
           
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0 list-group list-group-horizontal">
@@ -133,66 +153,53 @@
             </nav>
             <main class="mb-auto col-12" style="margin-top: 23%;">
             <div class="row">
-              <div class="col-12">
-              <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Prompt</label>
-                <input name="prompt" required type="text" class="form-control form-control-lg" 
-                id="prompt" aria-describedby="emailHelp" form="artgenform">
-                <div id="emailHelp" class="form-text">Please enter description of desired image</div>
-              </div>
-              <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Accuracy</label><br>
-                <input name="accuracy" type="radio" form="artgenform"
-                id="accuracy" aria-describedby="emailHelp" value="Low">
-                <label for="Low">Low (5 seconds)</label><br>
-                <input name="accuracy" type="radio" form="artgenform" 
-                id="accuracy" aria-describedby="emailHelp" value="Medium" checked>
-                <label for="Medium">Medium (15 seconds)</label><br>
-                <input name="accuracy" type="radio" form="artgenform"
-                id="accuracy" aria-describedby="emailHelp" value="High">
-                <label for="High">High (30 seconds)</label><br>
-                <div id="emailHelp" class="form-text">Please select how realistic the digital art should be</div>
-              </div>
-              <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Seed</label>
-                <input name="seed" type="number" class="form-control form-control-lg" 
-                id="seed" aria-describedby="emailHelp" min="0" form="artgenform">
-                <div id="emailHelp" class="form-text">Please enter a seed for art generation</div>
+              <div class="col-8">
+                <div class="card">
+                  <h6 class="card-subtitle mb-2 mt-2 ml-2">Initial Image</h6>
+                  <img id="init_img" src="{% static 'images/noise.png' %}" class="card-img-top" alt="...">
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Image Strength : 0</li>
+                    <li class="list-group-item">Timestamp : 19/01/2023</li>
+                    <li class="list-group-item">Run Time : 15 seconds</li>
+                    <li class="list-group-item">Iterations : 50</li>
+                  </ul>
+                </div>
               </div>
             </div>
             </main>
           </div>
           <div class="col-12 col-md-7 col-lg-6 col-xl-5 d-flex align-items-start flex-column px-vw-5">
-            <header class="mb-auto py-vh-2 col-12">
-              <a class="navbar-brand pe-md-4 fs-4 col-12 col-md-auto text-center">
-              </a>
-            </header>
-            <main class="mb-auto col-12">
-              <form class="row" method="post" id="artgenform">
-              {% csrf_token %}
-              <div class="col-12">
-                <div class="mb-3">
-                  <label for="exampleInputEmail1" class="form-label">Initial Image (Optional)</label>
-                  <br>
-                  <img src="{% static 'images/noise.png' %}" id = "previewimg"
-                  style="margin-bottom: 4%;">
-                  <input name="initimg" type="file" class="form-control form-control-lg" 
-                  id="initimg" aria-describedby="emailHelp" accept="image/*"
-                  onChange="changeimg()">
-                  <div id="emailHelp" class="form-text">Please upload an initial image to modify</div>
+          <main class="mb-auto col-12" style="margin-top: 10%;">
+            <div class="row">
+              <!-- <div class="col-6 mb-3">
+                <div class="card">
+                  <h5 class="card-header">Initial Image</h5>
+                  <img id="initimg" src="{% static 'images/noise.png' %}" class="card-img-top">
                 </div>
-                <div class="mb-3">
-                  <label for="exampleInputEmail1" class="form-label">Initial Image Strength (Optional)</label>
-                  <input name="img_strength" type="number" class="form-control form-control-lg" 
-                  id="img_strength" aria-describedby="emailHelp" 
-                  min="0" max="1" step="0.1" value="0">
-                  <div id="emailHelp" class="form-text">Please enter initial image influence</div>
-                </div>
-                <button type="submit" class="btn btn-white btn-xl mb-4">Generate</button>
+              </div> -->
+              <div class="col-12 mb-3">
+                <figure class="figure">
+                  <h6 class="card-subtitle mb-2 ml-2">Generated Image</h6>
+                  <img src="{% static 'images/egout1.png' %}" class="figure-img img-fluid rounded">
+                  <figcaption class="figure-caption text-justified"><p>Sunflower in a lonely desert all alone all day nobody there with the 
+                      sunflower thats very sad</p></figcaption>
+                </figure>
               </div>
-            </form>
+            </div>
+            <div class="row">
+              <div class="col-12 mb-3">
+                <div class="btn-group bg-white" role="group" aria-label="Button group with nested dropdown">
+                  <button type="button" class="btn btn-secondary">Download</button>
+                  <button type="button" class="btn btn-secondary mr-0 ml-0 pr-0 pl-0" disabled></button>
+                  <button type="button" class="btn btn-secondary">Create NFT</button>
+                  <button type="button" class="btn btn-secondary mr-0 ml-0 pr-0 pl-0" disabled></button>
+                  <button type="button" class="btn btn-secondary">Post</button>
+                </div>
+            </div>
+            </div>
             </main>
-          </div>
+            </div>
         </div>
-      </div></body>
+      </div>
+    </body>
     </html>

@@ -87,5 +87,33 @@ def artgen_view(request):
     if request.method == 'GET':
         return render(request, 'artgen.html')
     else:
-        print(request.POST)
-        return render(request, 'artgen.html')
+        prompt = request.POST.get('prompt')
+        accuracy = request.POST.get('accuracy')
+        seed = None
+        init_img = None
+        img_strength = 0
+        prompt_strength = 1.0
+
+        iters = 50
+        if accuracy == 'Low':
+            iters = 25
+        elif accuracy == 'Medium':
+            iters = 50
+        elif accuracy == 'High':
+            iters = 100
+
+        if request.POST.get('seed') != '':
+            seed = int(request.POST.get('seed'))
+
+        if request.POST.get('initimg') != '':
+            init_img = request.POST.get('initimg')
+
+        if request.POST.get('initimg') != '' and request.POST.get('img_strength') != '':
+            img_strength = float(request.POST.get('img_strength'))
+            prompt_strength = round(1 - img_strength, 1)
+
+        return render(request, 'art.html')
+
+
+def art_view(request):
+    return render(request, 'art.html')
