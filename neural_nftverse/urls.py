@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from nftgen.views import landing_view, login_view, register_view, logout_view, artgen_view, art_view
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,4 +27,4 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('artgen/', artgen_view, name='artgen'),
     path('art/', art_view, name='art'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
