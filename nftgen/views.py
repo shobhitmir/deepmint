@@ -3,6 +3,8 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from cryptoaddress import get_crypto_address
 from django.contrib.auth import authenticate, login, logout
+import requests
+
 
 # Create your views here.
 
@@ -112,7 +114,9 @@ def artgen_view(request):
             img_strength = float(request.POST.get('img_strength'))
             prompt_strength = round(1 - img_strength, 1)
 
-        return render(request, 'art.html')
+        url = 'https://replicate.delivery/pbxt/UWFTPVnSCDLNGNQ6P9if41gGhuOqHKk5q3IXsErwrUfEfJsgA/out-0.png'
+        img = requests.get(url).content
+        return render(request, 'art.html', {'img': img})
 
 
 def art_view(request):
