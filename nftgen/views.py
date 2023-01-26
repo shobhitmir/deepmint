@@ -7,6 +7,10 @@ from .models import Digital_Art
 import requests
 from django.core.files import File
 from django.core.files.base import ContentFile
+import time
+import replicate
+from dotenv import load_dotenv
+load_dotenv()
 
 
 # Create your views here.
@@ -88,23 +92,44 @@ def register_view(request):
             return render(request, 'register.html', {'errors': errors})
 
 
+def generate_art(prompt, prompt_strength, init_image, seed, iters):
+    model = replicate.models.get("stability-ai/stable-diffusion")
+    version = model.versions.get(
+        "f178fa7a1ae43a9a9af01b833b9d2ecf97b1bcb0acfd2dc5dd04895e042863f1")
+    inputs = {
+        'prompt': prompt,
+        'width': 768,
+        'height': 768,
+        'prompt_strength': prompt_strength,
+        'num_outputs': 1,
+        'num_inference_steps': iters,
+        'guidance_scale': 7.5,
+        'scheduler': "DPMSolverMultistep",
+    }
+    if seed is not None:
+        inputs['seed'] = seed
+
+    return version.predict(**inputs)[0]
+    # return 'https://replicate.delivery/pbxt/hHjUKQzdeOVpFqUyN364osBPfuy98bSI0wEAI3GcH6KnYUWQA/out-0.png'
+
+
 def artgen_view(request):
     if request.method == 'GET':
         return render(request, 'artgen.html')
     else:
         prompt = request.POST.get('prompt')
-        accuracy = request.POST.get('accuracy')
+        quality = request.POST.get('quality')
         seed = None
         init_img = None
         img_strength = 0
         prompt_strength = 1.0
 
         iters = 50
-        if accuracy == 'Low':
+        if quality == 'Low':
             iters = 25
-        elif accuracy == 'Medium':
+        elif quality == 'Medium':
             iters = 50
-        elif accuracy == 'High':
+        elif quality == 'High':
             iters = 100
 
         if request.POST.get('seed') != '':
@@ -117,16 +142,21 @@ def artgen_view(request):
             img_strength = float(request.POST.get('img_strength'))
             prompt_strength = round(1 - img_strength, 1)
 
-        img_url = 'https://replicate.delivery/pbxt/UWFTPVnSCDLNGNQ6P9if41gGhuOqHKk5q3IXsErwrUfEfJsgA/out-0.png'
+        start_time = time.time()
+        img_url = generate_art(prompt, prompt_strength,
+                               init_img, seed, iters)
+        end_time = time.time()
+        run_time = end_time - start_time
         gen_img = requests.get(img_url).content
 
         digital_art = Digital_Art(owner=request.user, iterations=iters,
-                                  image_strength=img_strength, run_time=15, prompt=prompt)
+                                  image_strength=img_strength, run_time=run_time, prompt=prompt,
+                                  seed=seed)
 
         if 'initimg' in request.FILES:
             digital_art = Digital_Art(owner=request.user, iterations=iters,
                                       image_strength=img_strength, run_time=15,
-                                      init_image=init_img, prompt=prompt)
+                                      init_image=init_img, prompt=prompt, seed=seed)
 
         art_num = Digital_Art.objects.count() + 1
         gen_img = ContentFile(gen_img, name='genimg-'+str(art_num)+'.png')
