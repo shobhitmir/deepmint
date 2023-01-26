@@ -5,13 +5,14 @@ from cryptoaddress import get_crypto_address
 from django.contrib.auth import authenticate, login, logout
 from .models import Digital_Art
 import requests
-from django.core.files import File
 from django.core.files.base import ContentFile
 import time
 import replicate
+import tempfile
+from neural_nftverse.settings import BASE_DIR
+import os
 from dotenv import load_dotenv
 load_dotenv()
-
 
 # Create your views here.
 
@@ -39,7 +40,6 @@ def login_view(request):
         try:
             eth_address = get_crypto_address('ETH', public_key)
             try:
-                print(public_key)
                 user = authenticate(username=public_key, password=public_key)
                 if user is not None:
                     login(request, user)
@@ -93,13 +93,19 @@ def register_view(request):
 
 
 def generate_art(prompt, prompt_strength, init_image, seed, iters):
-    model = replicate.models.get("stability-ai/stable-diffusion")
+    model = replicate.models.get("stability-ai/stable-diffusion-img2img")
     version = model.versions.get(
-        "f178fa7a1ae43a9a9af01b833b9d2ecf97b1bcb0acfd2dc5dd04895e042863f1")
+        "15a3689ee13b0d2616e98820eca31d4c3abcd36672df6afce5cb6feb1d66087d")
+
+    init_img_file = tempfile.NamedTemporaryFile(
+        delete=False, dir=os.path.join(BASE_DIR, 'nftgen', 'temp'))
+    for chunk in init_image.chunks():
+        init_img_file.write(chunk)
+
+    init_img_file.close()
     inputs = {
         'prompt': prompt,
-        'width': 768,
-        'height': 768,
+        'image': open(init_img_file.name, "rb"),
         'prompt_strength': prompt_strength,
         'num_outputs': 1,
         'num_inference_steps': iters,
@@ -108,8 +114,21 @@ def generate_art(prompt, prompt_strength, init_image, seed, iters):
     }
     if seed is not None:
         inputs['seed'] = seed
+    gen_img_url = version.predict(**inputs)[0]
+    init_img_file.close()
 
-    return version.predict(**inputs)[0]
+    return gen_img_url, init_img_file
+
+    # inputs = {
+    #     'prompt': prompt,
+    #     'width': 768,
+    #     'height': 768,
+    #     'prompt_strength': prompt_strength,
+    #     'num_outputs': 1,
+    #     'num_inference_steps': iters,
+    #     'guidance_scale': 7.5,
+    #     'scheduler': "DPMSolverMultistep",
+    # }
     # return 'https://replicate.delivery/pbxt/hHjUKQzdeOVpFqUyN364osBPfuy98bSI0wEAI3GcH6KnYUWQA/out-0.png'
 
 
@@ -142,28 +161,32 @@ def artgen_view(request):
             img_strength = float(request.POST.get('img_strength'))
             prompt_strength = round(1 - img_strength, 1)
 
-        start_time = time.time()
-        img_url = generate_art(prompt, prompt_strength,
-                               init_img, seed, iters)
-        end_time = time.time()
-        run_time = end_time - start_time
-        gen_img = requests.get(img_url).content
+        art_num = Digital_Art.objects.count() + 1
 
         digital_art = Digital_Art(owner=request.user, iterations=iters,
-                                  image_strength=img_strength, run_time=run_time, prompt=prompt,
+                                  image_strength=img_strength, prompt=prompt,
                                   seed=seed)
 
         if 'initimg' in request.FILES:
             digital_art = Digital_Art(owner=request.user, iterations=iters,
-                                      image_strength=img_strength, run_time=15,
-                                      init_image=init_img, prompt=prompt, seed=seed)
+                                      image_strength=img_strength, init_image=init_img,
+                                      prompt=prompt, seed=seed)
 
-        art_num = Digital_Art.objects.count() + 1
+        start_time = time.time()
+        img_url, init_img_file = generate_art(prompt, prompt_strength,
+                                              digital_art.init_image, seed, iters)
+        end_time = time.time()
+
+        run_time = end_time - start_time
+        digital_art.run_time = run_time
+        gen_img = requests.get(img_url).content
+
         gen_img = ContentFile(gen_img, name='genimg-'+str(art_num)+'.png')
         digital_art.gen_image.save(
             'genimg-'+str(art_num)+'.png', gen_img)
         digital_art.save()
 
+        os.remove(init_img_file.name)
         return redirect(art_view, digital_art.id)
 
 

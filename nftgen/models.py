@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 class Digital_Art(models.Model):
     init_image = models.ImageField(upload_to='initial_images/', blank=True,
-                                   default='initial_images/default-noise.png')
+                                   default='default-noise.png')
     gen_image = models.ImageField(
         upload_to='generated_images/', blank=False, null=False)
     prompt = models.TextField(blank=False, null=False)
