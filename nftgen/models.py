@@ -8,6 +8,7 @@ class Digital_Art(models.Model):
     init_image = models.ImageField(upload_to='initial_images/', blank=True,
                                    default='initial_images/default-noise.png')
     gen_image = models.ImageField(upload_to='generated_images/', blank=False)
+    prompt = models.TextField(blank=False)
     owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='digital_art', blank=False)
     iterations = models.IntegerField(blank=False)

@@ -96,7 +96,7 @@
           <div class="col-12 col-md-7 col-lg-6 col-xl-5 d-flex align-items-start flex-column px-vw-5">
             <nav id="navScroll" class="navbar navbar-dark bg-black fixed-top" tabindex="0">
               <div class="container">
-                <a class="navbar-brand mx-auto mb-2 mb-lg-0 list-group list-group-horizontal" href="{% url 'art' %}">
+                <a class="navbar-brand mx-auto mb-2 mb-lg-0 list-group list-group-horizontal" href="{% url 'art' id=art.id %}">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-stack"
                     viewBox="0 0 16 16" style="margin-top: 7%; margin-right: 1%;">
                     <path
@@ -155,13 +155,13 @@
             <div class="row">
               <div class="col-8">
                 <div class="card">
-                  <h6 class="card-subtitle mb-2 mt-2 ml-2">Initial Image</h6>
-                  <img id="init_img" src="{% static 'images/noise.png' %}" class="card-img-top" alt="...">
-                  <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Image Strength : 0</li>
-                    <li class="list-group-item">Timestamp : 19/01/2023</li>
+                  <h6 class="card-subtitle mb-2 mt-2 ml-2" style="font-weight: bold;">Initial Image</h6>
+                  <img id="init_img" src="{{art.init_image.url}}" class="card-img-top" alt="...">
+                  <ul class="list-group list-group-flush" style="font-weight: bold;">
+                    <li class="list-group-item">Image Strength : {{art.image_strength}}</li>
+                    <li class="list-group-item">Timestamp : {{art.timestamp}}</li>
                     <li class="list-group-item">Run Time : 15 seconds</li>
-                    <li class="list-group-item">Iterations : 50</li>
+                    <li class="list-group-item">Iterations : {{art.iterations}}</li>
                   </ul>
                 </div>
               </div>
@@ -179,10 +179,9 @@
               </div> -->
               <div class="col-12 mb-3">
                 <figure class="figure">
-                  <h6 class="card-subtitle mb-2 ml-2">Generated Image</h6>
-                  <img src="{% static 'images/egout1.png' %}" class="figure-img img-fluid rounded">
-                  <figcaption class="figure-caption text-justified"><p>Sunflower in a lonely desert all alone all day nobody there with the 
-                      sunflower thats very sad</p></figcaption>
+                  <h6 class="card-subtitle mb-2 ml-2" style="font-weight: bold;">Generated Art ({{art.timestamp}})</h6>
+                  <img src="{{art.gen_image.url}}" class="figure-img img-fluid rounded">
+                  <figcaption class="figure-caption text-justified"><p>{{art.prompt}}</p></figcaption>
                 </figure>
               </div>
             </div>

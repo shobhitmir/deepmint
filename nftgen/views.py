@@ -121,12 +121,12 @@ def artgen_view(request):
         gen_img = requests.get(img_url).content
 
         digital_art = Digital_Art(owner=request.user, iterations=iters,
-                                  image_strength=img_strength, run_time=15)
+                                  image_strength=img_strength, run_time=15, prompt=prompt)
 
         if 'initimg' in request.FILES:
             digital_art = Digital_Art(owner=request.user, iterations=iters,
                                       image_strength=img_strength, run_time=15,
-                                      init_image=init_img)
+                                      init_image=init_img, prompt=prompt)
 
         art_num = Digital_Art.objects.count() + 1
         gen_img = ContentFile(gen_img, name='genimg-'+str(art_num)+'.png')
@@ -134,8 +134,9 @@ def artgen_view(request):
             'genimg-'+str(art_num)+'.png', gen_img)
         digital_art.save()
 
-        return render(request, 'art.html')
+        return redirect(art_view, digital_art.id)
 
 
-def art_view(request):
-    return render(request, 'art.html')
+def art_view(request, id):
+    art = Digital_Art.objects.filter(id=id).first()
+    return render(request, 'art.html', {'art': art})

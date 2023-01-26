@@ -26,5 +26,5 @@ urlpatterns = [
     path('register/', register_view, name='register'),
     path('logout/', logout_view, name='logout'),
     path('artgen/', artgen_view, name='artgen'),
-    path('art/', art_view, name='art'),
+    path('art/<int:id>/', art_view, name='art'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
