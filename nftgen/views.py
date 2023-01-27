@@ -114,6 +114,7 @@ def generate_art(prompt, prompt_strength, init_image, seed, iters):
     }
     if seed is not None:
         inputs['seed'] = seed
+
     gen_img_url = version.predict(**inputs)[0]
     init_img_file.close()
 
