@@ -11,6 +11,7 @@ import replicate
 import tempfile
 from neural_nftverse.settings import BASE_DIR
 import os
+from PIL import Image
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -92,6 +93,19 @@ def register_view(request):
             return render(request, 'register.html', {'errors': errors})
 
 
+def resize_image(input_image_file):
+    original_image = Image.open(input_image_file.name)
+    resized_image = original_image.resize((768, 768)).convert('RGB')
+    input_image_file.close()
+    os.remove(input_image_file.name)
+    output_img_file = tempfile.NamedTemporaryFile(
+        delete=False, dir=os.path.join(BASE_DIR, 'nftgen', 'temp'), suffix=".jpg")
+
+    resized_image.save(output_img_file, format='JPEG')
+    output_img_file.close()
+    return output_img_file
+
+
 def generate_art(prompt, prompt_strength, init_image, seed, iters):
     model = replicate.models.get("stability-ai/stable-diffusion-img2img")
     version = model.versions.get(
@@ -102,7 +116,8 @@ def generate_art(prompt, prompt_strength, init_image, seed, iters):
     for chunk in init_image.chunks():
         init_img_file.write(chunk)
 
-    init_img_file.close()
+    init_img_file = resize_image(init_img_file)
+
     inputs = {
         'prompt': prompt,
         'image': open(init_img_file.name, "rb"),
@@ -119,18 +134,6 @@ def generate_art(prompt, prompt_strength, init_image, seed, iters):
     init_img_file.close()
 
     return gen_img_url, init_img_file
-
-    # inputs = {
-    #     'prompt': prompt,
-    #     'width': 768,
-    #     'height': 768,
-    #     'prompt_strength': prompt_strength,
-    #     'num_outputs': 1,
-    #     'num_inference_steps': iters,
-    #     'guidance_scale': 7.5,
-    #     'scheduler': "DPMSolverMultistep",
-    # }
-    # return 'https://replicate.delivery/pbxt/hHjUKQzdeOVpFqUyN364osBPfuy98bSI0wEAI3GcH6KnYUWQA/out-0.png'
 
 
 def artgen_view(request):
