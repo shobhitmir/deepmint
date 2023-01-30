@@ -1,0 +1,250 @@
+{% load static %}
+
+<!doctype html>
+<html class="h-100" lang="en">
+
+  <head>
+      <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+  <meta name="description" content="A well made and handcrafted Bootstrap 5 template">
+  <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="img/favicon.png">
+  <meta name="author" content="Holger Koenemann">
+  <meta name="generator" content="Eleventy v2.0.0">
+  <meta name="HandheldFriendly" content="true">
+  <title>Profile</title>
+  <style>
+    .navbar {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: black;
+    }
+    
+    body {
+      padding-top: 60px;
+    }
+
+    #profilepic {
+      object-fit: cover !important;
+    }
+
+.filter-button
+{
+    font-size: 18px !important;
+    border: 1px solid white !important;
+    border-radius: 5px;
+    text-align: center;
+    color: white !important;
+    margin-bottom: 30px;
+
+}
+.filter-button:hover
+{
+    text-align: center;
+    color: black !important;
+    background-color: white !important;
+
+}
+.btn-default:active .filter-button:active
+{
+    color: black !important;
+    background-color: white !important;
+}
+
+.port-image
+{
+    width: 100%;
+}
+
+.gallery_product
+{
+    margin-bottom: 30px;
+}
+  </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/theme.min.css' %}">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </head>
+  <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+  <script>
+    $(document).ready(function(){
+
+$(".filter-button").click(function(){
+    var value = $(this).attr('data-filter');
+    
+    if(value == "all")
+    {
+        $('.filter').show('1000');
+    }
+    else
+    {
+        $(".filter").not('.'+value).hide('3000');
+        $('.filter').filter('.'+value).show('3000');
+        
+    }
+});
+
+if ($(".filter-button").removeClass("active")) {
+$(this).removeClass("active");
+}
+$(this).addClass("active");
+
+});
+  </script>
+
+
+  <body class="w-100 bg-black" data-bs-spy="scroll" data-bs-target="#navScroll">
+
+    <nav id="navScroll" class="navbar navbar-dark bg-black fixed-top" tabindex="0">
+      <div class="container">
+        <a class="navbar-brand mx-auto mb-2 mb-lg-0 list-group list-group-horizontal" href="{% url 'profile' %}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-stack"
+            viewBox="0 0 16 16" style="margin-top: 7%; margin-right: 1%;">
+            <path
+              d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.598.598 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.598.598 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.598.598 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535L7.733.063z" />
+            <path
+              d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.598.598 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.659z" />
+          </svg>
+          <span class="ms-md-1 mt-1 fw-bolder me-md-5">Profile</span>
+        </a>
+  
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 list-group list-group-horizontal">
+          <li class="nav-item">
+            <a class="nav-link fs-5" href="{% url 'landing' %}" aria-label="Homepage">
+              Home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fs-5" href="" aria-label="A sample content page">
+              Feed
+            </a>
+          </li>
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link fs-5" href="{% url 'logout' %}" aria-label="A system message page">
+              Logout
+            </a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link fs-5" href="{% url 'login' %}" aria-label="A system message page">
+              Login
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+        
+        {% if user.is_authenticated %}
+        <div class="dropdown">
+          <a class="nav-link fs-5 dropdown-toggle" type="button" id="btnDropdownDemo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+          style="color: grey;">
+            {{request.user.email}}
+          </a>
+        
+          <div class="dropdown-menu" aria-labelledby="btnDropdownDemo"
+          style="color:white; background-color: black;">
+            <a type="button" href="{% url 'artgen' %}" class="dropdown-item nav-item"
+            style="color:white; background-color: black; text-decoration: none;">Digital Art Generator</a>
+            <a type="button" class="dropdown-item">NFT Generator</a>
+            <a type="button" class="dropdown-item nav-item" href="{% url 'profile' %}"
+            style="color:white; background-color: black; text-decoration: none;">Profile</a>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </nav>
+
+    <div class="container my-5 text-white">
+      <div class="row">
+        <!-- Left Section -->
+        <div class="col-2 mt-2">
+          <img id="profilepic" src="{% static 'images/default_profile_pic.png' %}" class="rounded-circle" style="width: 160px; height: 160px;">
+        </div>
+
+        <div class="col-4 mt-2">
+          <h4 class="font-weight-bold">Public Address</h4>
+          <p>{{ user.username }}</p>
+          <h4 class="font-weight-bold">Email</h4>
+          <p>{{ user.email }}</p>
+        </div>
+    
+        <!-- Middle Section -->
+        <div class="col-4 mt-2">
+          <h4 class="font-weight-bold">Stats</h4>
+          <p style="font-size: 88%; margin-bottom: 5px;">Art Generated : {{ user.posts.count }}</p>
+          <p style="font-size: 88%; margin-bottom: 5px;">NFTs Generated : {{ user.likes.count }}</p>
+          <p style="font-size: 88%; margin-bottom: 5px;">Total Likes : {{ user.likes.count }}</p>
+          <p style="font-size: 88%; margin-bottom: 5px;">Rank : {{ user.likes.count }}</p>
+        </div>
+      </div>
+    </div>
+    <hr style="border: solid white 1px; width: 85%;">
+
+    <div class="container">
+      <div class="row">
+      <div align="center">
+          <button class="btn btn-default filter-button" data-filter="all">Art</button>
+          <button class="btn btn-default filter-button" data-filter="hdpe">NFTs</button>
+          <button class="btn btn-default filter-button" data-filter="sprinkle">Posts</button>
+      </div>
+      <br/>
+
+          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
+              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+          </div>
+
+          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter sprinkle">
+              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+          </div>
+
+          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
+              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+          </div>
+
+          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
+              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+          </div>
+
+          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter spray">
+              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+          </div>
+
+          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
+              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+          </div>
+
+          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter spray">
+              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+          </div>
+
+          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
+              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+          </div>
+
+          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
+              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+          </div>
+
+          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
+              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+          </div>
+
+          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter spray">
+              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+          </div>
+
+          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter sprinkle">
+              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+          </div>
+      </div>
+  </div>
+</section>
+  </body>
+</html>

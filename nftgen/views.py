@@ -197,3 +197,7 @@ def artgen_view(request):
 def art_view(request, id):
     art = Digital_Art.objects.filter(id=id).first()
     return render(request, 'art.html', {'art': art})
+
+
+def profile_view(request):
+    return render(request, 'profile.html')
