@@ -247,11 +247,13 @@ $(".filter-button").click(function(){
 
     <div class="container">
       <div class="row">
-      <div align="center">
-          <button class="btn btn-default filter-button active" data-filter="art">Art</button>
-          <button class="btn btn-default filter-button" data-filter="nfts">NFTs</button>
-          <button class="btn btn-default filter-button" data-filter="posts">Posts</button>
-      </div>
+        <div align="center">
+          <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <button class="btn btn-default filter-button active" data-filter="art">Generated Art</button>
+            <button class="btn btn-default filter-button" data-filter="nfts">Generated NFTs</button>
+            <button class="btn btn-default filter-button" data-filter="posts">Posts</button>
+          </div>
+        </div>
       <br/>
           {% for art in digital_art %}
           <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter art">
