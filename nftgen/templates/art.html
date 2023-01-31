@@ -42,18 +42,23 @@
       width: 330px !important;
     }
 
-    .btn-group
-    {
-      border-radius: 12px;
-    }
     .btn
     {
       padding-left: 20px !important;
       padding-right: 20px !important;
+      font-size: 18px !important;
+      border: 1px solid white !important;
+      border-radius: 5px;
+      text-align: center;
+      color: white !important;
+      margin-bottom: 30px;
     }
+
     .btn:hover
     {
-      font-weight: bold;
+      text-align: center;
+      color: black !important;
+      background-color: white !important;
     }
     .card
     {
@@ -179,12 +184,10 @@
             <li class="list-group-item">Run Time : {{art.run_time}} seconds</li>
           </ul>
           <br>
-          <div class="btn-group bg-white ml-2" role="group" aria-label="Button group with nested dropdown">
-            <button type="button" class="btn btn-secondary" onclick="download_image()">Download Art</button>
-            <button type="button" class="btn btn-secondary mr-0 ml-0 pr-0 pl-0" disabled></button>
-            <button type="button" class="btn btn-secondary">Create NFT</button>
-            <button type="button" class="btn btn-secondary mr-0 ml-0 pr-0 pl-0" disabled></button>
-            <button type="button" class="btn btn-secondary">Post</button>
+          <div class="btn-group ml-2" role="group" aria-label="Button group with nested dropdown">
+            <button type="button" class="btn btn-default" onclick="download_image()">Download Art</button>
+            <button type="button" class="btn btn-default">Create NFT</button>
+            <button type="button" class="btn btn-default">Post</button>
           </div>
         </div>
         <div class="col-md-4 mb-3">
