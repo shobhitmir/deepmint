@@ -89,6 +89,27 @@ hr {
   background-color: white !important;
 }
 
+.img-responsive {
+  width: 365px;
+  height: 365px;
+  object-fit: contain;
+}
+
+.img-responsive:hover {
+  cursor: pointer;
+}
+
+figcaption {
+      color:white !important;
+      font-weight: bolder;
+      font-size: large !important;
+    }
+
+    .active {
+      background-color: white !important;
+      color: black !important;
+    }
+
   </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="{% static 'css/theme.min.css' %}">
@@ -99,26 +120,20 @@ hr {
   <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
   <script>
     $(document).ready(function(){
+      $(".filter").not('.'+'art').hide('3000');
+      $('.filter').filter('.'+'art').show('3000');
 
 $(".filter-button").click(function(){
-    var value = $(this).attr('data-filter');
-    
-    if(value == "all")
-    {
-        $('.filter').show('1000');
+    var buttons = document.querySelectorAll('.filter-button');
+    console.log(buttons)
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].classList.remove('active');
     }
-    else
-    {
+    this.classList.add('active');
+    var value = $(this).attr('data-filter');
         $(".filter").not('.'+value).hide('3000');
         $('.filter').filter('.'+value).show('3000');
-        
-    }
 });
-
-if ($(".filter-button").removeClass("active")) {
-$(this).removeClass("active");
-}
-$(this).addClass("active");
 
 });
 
@@ -233,15 +248,19 @@ $(this).addClass("active");
     <div class="container">
       <div class="row">
       <div align="center">
-          <button class="btn btn-default filter-button" data-filter="all">Art</button>
-          <button class="btn btn-default filter-button" data-filter="hdpe">NFTs</button>
-          <button class="btn btn-default filter-button" data-filter="sprinkle">Posts</button>
+          <button class="btn btn-default filter-button active" data-filter="art">Art</button>
+          <button class="btn btn-default filter-button" data-filter="nfts">NFTs</button>
+          <button class="btn btn-default filter-button" data-filter="posts">Posts</button>
       </div>
       <br/>
-
-          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
-              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+          {% for art in digital_art %}
+          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter art">
+            <a href="{% url 'art' id=art.id %}">
+            <img src="{{art.gen_image.url}}" class="img-responsive">
+            </a>
+            <figcaption class="figure-caption text-justified"><p>{{art.prompt}}</p></figcaption>
           </div>
+          {% endfor %}
 
           <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter sprinkle">
               <img src="http://fakeimg.pl/365x365/" class="img-responsive">

@@ -201,7 +201,8 @@ def art_view(request, id):
 
 def profile_view(request):
     if request.method == 'GET':
-        return render(request, 'profile.html')
+        art = Digital_Art.objects.filter(owner=request.user)
+        return render(request, 'profile.html', {'digital_art': art})
     else:
         if 'profilepic' in request.FILES:
             profile_pic = request.FILES['profilepic']
