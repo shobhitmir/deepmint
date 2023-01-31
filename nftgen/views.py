@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from cryptoaddress import get_crypto_address
 from django.contrib.auth import authenticate, login, logout
-from .models import Digital_Art
+from .models import Digital_Art, Profile
 import requests
 from django.core.files.base import ContentFile
 import time
@@ -200,4 +200,11 @@ def art_view(request, id):
 
 
 def profile_view(request):
-    return render(request, 'profile.html')
+    if request.method == 'GET':
+        return render(request, 'profile.html')
+    else:
+        if 'profilepic' in request.FILES:
+            profile_pic = request.FILES['profilepic']
+            profile = Profile.objects.update_or_create(user=request.user,
+                                                       defaults={'profile_pic': profile_pic})
+        return redirect(profile_view)

@@ -23,3 +23,14 @@ class Digital_Art(models.Model):
     class Meta:
         verbose_name = 'Digital_Art'
         verbose_name_plural = 'Digital_Art'
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='profile')
+    profile_pic = models.ImageField(upload_to='profile_pics/', blank=False, null=False,
+                                    default='default-profile-pic.png')
+
+    class Meta:
+        verbose_name = 'Profile'
+        verbose_name_plural = 'Profile'

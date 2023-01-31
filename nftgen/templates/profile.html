@@ -27,6 +27,9 @@
     
     body {
       padding-top: 60px;
+      background-image: url('../static/images/profile_bg.jpg');
+      background-repeat: repeat-y;
+      background-size: cover;
     }
 
     #profilepic {
@@ -65,6 +68,27 @@
 {
     margin-bottom: 30px;
 }
+
+.profilepic:hover {
+  cursor: pointer;
+}
+
+hr {
+  margin-top: 1% !important;
+}
+
+.frosted-glass {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.updatebtn {
+  margin-left: 5% !important;
+}
+
+.updatebtn:hover {
+  background-color: white !important;
+}
+
   </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="{% static 'css/theme.min.css' %}">
@@ -97,6 +121,13 @@ $(this).removeClass("active");
 $(this).addClass("active");
 
 });
+
+    const changeimg = (e) =>
+    {
+        const img = document.getElementById('profilepic').files[0]
+        const bgUrl = URL.createObjectURL(img)
+        document.getElementById('profpic').src = bgUrl
+    }
   </script>
 
 
@@ -161,14 +192,23 @@ $(this).addClass("active");
       </div>
     </nav>
 
-    <div class="container my-5 text-white">
+    <div class="container my-2 text-black frosted-glass mb-4" style="margin-top: 4% !important;">
       <div class="row">
         <!-- Left Section -->
         <div class="col-2 mt-2">
-          <img id="profilepic" src="{% static 'images/default_profile_pic.png' %}" class="rounded-circle" style="width: 160px; height: 160px;">
+          <form class="row" method="post" id="artgenform" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="profilepic">
+              <img id="profpic" src="{{user.profile.profile_pic.url}}" class="rounded-circle profilepic" style="width: 160px; height: 160px;">
+            </label>
+            <input name="profilepic" hidden type="file" class="form-control form-control-md" 
+                  id="profilepic" aria-describedby="emailHelp" accept="image/*" onChange="changeimg()">
+              <button type="submit" class="btn btn-white btn-lg mt-3 updatebtn"
+              style="margin-bottom: 0px;">Update Profile</button>
+          </form>
         </div>
 
-        <div class="col-4 mt-2">
+        <div class="col-4 mt-3">
           <h4 class="font-weight-bold">Public Address</h4>
           <p>{{ user.username }}</p>
           <h4 class="font-weight-bold">Email</h4>
@@ -178,14 +218,17 @@ $(this).addClass("active");
         <!-- Middle Section -->
         <div class="col-4 mt-2">
           <h4 class="font-weight-bold">Stats</h4>
-          <p style="font-size: 88%; margin-bottom: 5px;">Art Generated : {{ user.posts.count }}</p>
-          <p style="font-size: 88%; margin-bottom: 5px;">NFTs Generated : {{ user.likes.count }}</p>
-          <p style="font-size: 88%; margin-bottom: 5px;">Total Likes : {{ user.likes.count }}</p>
-          <p style="font-size: 88%; margin-bottom: 5px;">Rank : {{ user.likes.count }}</p>
+          <p style="font-size: 94%; margin-bottom: 5px;">Art Generated : {{ user.posts.count }}</p>
+          <hr style="border: gray solid 1px;">
+          <p style="font-size: 94%; margin-bottom: 5px;">NFTs Generated : {{ user.likes.count }}</p>
+          <hr style="border: gray solid 1px;">
+          <p style="font-size: 94%; margin-bottom: 5px;">Total Likes : {{ user.likes.count }}</p>
+          <hr style="border: gray solid 1px;">
+          <p style="font-size: 94%; margin-bottom: 5px;">Rank : {{ user.likes.count }}</p>
+          <hr style="border: gray solid 1px;">
         </div>
       </div>
     </div>
-    <hr style="border: solid white 1px; width: 85%;">
 
     <div class="container">
       <div class="row">
