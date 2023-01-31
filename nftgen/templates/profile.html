@@ -233,7 +233,7 @@ $(".filter-button").click(function(){
         <!-- Middle Section -->
         <div class="col-4 mt-2">
           <h4 class="font-weight-bold">Stats</h4>
-          <p style="font-size: 94%; margin-bottom: 5px;">Art Generated : {{ user.posts.count }}</p>
+          <p style="font-size: 94%; margin-bottom: 5px;">Art Generated : {{ digital_art | length}}</p>
           <hr style="border: gray solid 1px;">
           <p style="font-size: 94%; margin-bottom: 5px;">NFTs Generated : {{ user.likes.count }}</p>
           <hr style="border: gray solid 1px;">
