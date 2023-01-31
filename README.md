@@ -1,2 +1,2 @@
 # deepmint
-Minting NFTs using Deep Neural Networks
+Minting NFTs using Deep Learning
