@@ -9,7 +9,7 @@ from django.core.files.base import ContentFile
 import time
 import replicate
 import tempfile
-from neural_nftverse.settings import BASE_DIR
+from deepmint.settings import BASE_DIR
 import os
 from PIL import Image
 from dotenv import load_dotenv
