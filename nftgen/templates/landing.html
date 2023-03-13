@@ -130,7 +130,8 @@
         style="color:white; background-color: black;">
           <a type="button" href="{% url 'artgen' %}" class="dropdown-item nav-item"
           style="color:white; background-color: black; text-decoration: none;">Digital Art Generator</a>
-          <a type="button" class="dropdown-item">NFT Generator</a>
+          <a type="button" class="dropdown-item" href="{% url 'nftgen' %}"
+          style="color:white; background-color: black; text-decoration: none;">NFT Generator</a>
           <a type="button" class="dropdown-item nav-item" href="{% url 'profile' %}"
           style="color:white; background-color: black; text-decoration: none;">Profile</a>
         </div>
@@ -216,7 +217,7 @@
             <h3 class="border-top border-secondary pt-5 mt-5">NFT Generator</h3>
             <p class="text-secondary">Convert any image to an NFT using this tool. 
                 The NFT can be generated and published on NFT marketplaces such as OpenSea<br>
-              <a href="#" class="link-fancy link-fancy-light me-2">Tell me more</a>
+              <a href="{% url 'nftgen' %}" class="link-fancy link-fancy-light me-2">Explore</a>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                 class="bi bi-arrow-right-circle" viewBox="0 0 16 16">
                 <path fill-rule="evenodd"

@@ -1,0 +1,170 @@
+{% load static %}
+
+<!doctype html>
+<html class="h-100" lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+  <meta name="description" content="A well made and handcrafted Bootstrap 5 template">
+  <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="img/favicon.png">
+  <meta name="author" content="Holger Koenemann">
+  <meta name="generator" content="Eleventy v2.0.0">
+  <meta name="HandheldFriendly" content="true">
+  <title>NFT Generator</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <style>
+    #nft_img:hover {
+      cursor: pointer;
+    }
+    #previewimg {
+      object-fit: cover;
+      width: 120px;
+      height: 120px;
+    }
+    body {
+      padding-top: 60px;
+      background-image: 
+      linear-gradient(
+      rgba(0, 0, 0, 0.6),
+      rgba(0, 0, 0, 0.6)
+    ),
+      url('../static/images/art_bg.jpg');
+      background-repeat: repeat-y;
+      background-size: cover;
+    }
+    label {
+      color:white;
+      font-weight: bolder;
+    }
+    .form-text {
+      color: lightgray !important;
+    }
+    .navbar {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    }
+    .dropdown-menu a:hover {
+      background-color: black;
+    }
+  </style>
+  <link rel="stylesheet" href="{% static 'css/theme.min.css' %}">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  </head>
+  <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+  <script type="text/javascript">
+    const changeimg = (e) =>
+    {
+        const img = document.getElementById('nft_img').files[0]
+        const bgUrl = URL.createObjectURL(img)
+        document.getElementById('previewimg').src = bgUrl
+        document.getElementsByClassName('gradient')[0].style.backgroundImage = `url(${bgUrl})`
+    }
+  </script>
+  <body class="d-flex h-100 w-100 bg-black text-white" data-bs-spy="scroll" data-bs-target="#navScroll">
+
+    <div class="h-100 container-fluid">
+      <div class="h-100 row d-flex align-items-stretch">
+        
+          <div class="col-12 col-md-7 col-lg-6 col-xl-5 d-flex align-items-start flex-column px-vw-5">
+            <nav id="navScroll" class="navbar navbar-dark bg-black fixed-top px-vw-5" tabindex="0">
+              <div class="container">
+                <a class="navbar-brand mx-auto mb-2 mb-lg-0 list-group list-group-horizontal" href="{% url 'artgen' %}">
+                  <img src="{% static 'images/symbol.png' %}" class="mr-1 mt-1" 
+                  style="height: 35px;">
+                  <span class="ms-md-1 mt-1 fw-bolder me-md-5">NFT Generator</span>
+                </a>
+          
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 list-group list-group-horizontal">
+                  <li class="nav-item">
+                    <a class="nav-link fs-5" href="{% url 'landing' %}" aria-label="Homepage">
+                      Home
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link fs-5" href="" aria-label="A sample content page">
+                      Feed
+                    </a>
+                  </li>
+                  {% if user.is_authenticated %}
+                  <li class="nav-item">
+                    <a class="nav-link fs-5" href="{% url 'logout' %}" aria-label="A system message page">
+                      Logout
+                    </a>
+                  </li>
+                  {% else %}
+                  <li class="nav-item">
+                    <a class="nav-link fs-5" href="{% url 'login' %}" aria-label="A system message page">
+                      Login
+                    </a>
+                  </li>
+                  {% endif %}
+                </ul>
+                
+                {% if user.is_authenticated %}
+                <div class="dropdown">
+                  <a class="nav-link fs-5 dropdown-toggle" type="button" id="btnDropdownDemo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                  style="color: grey;">
+                    {{request.user.email}}
+                  </a>
+                
+                  <div class="dropdown-menu" aria-labelledby="btnDropdownDemo"
+                  style="color:white; background-color: black;">
+                    <a type="button" href="{% url 'artgen' %}" class="dropdown-item nav-item"
+                    style="color:white; background-color: black; text-decoration: none;">Digital Art Generator</a>
+                    <a type="button" class="dropdown-item" href="{% url 'nftgen' %}"
+                    style="color:white; background-color: black; text-decoration: none;">NFT Generator</a>
+                    <a type="button" class="dropdown-item nav-item" href="{% url 'profile' %}"
+                    style="color:white; background-color: black; text-decoration: none;">Profile</a>
+                  </div>
+                </div>
+                {% endif %}
+              </div>
+            </nav>
+            <main class="mb-auto col-12" style="margin-top: 23%;">
+            <div class="row">
+              <div class="col-12">
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Name</label>
+                <input name="nft_name" required type="text" class="form-control form-control-lg" 
+                id="nft_name" aria-describedby="emailHelp" form="nftgenform">
+                <div id="emailHelp" class="form-text">Please enter a name for your NFT</div>
+              </div>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Description</label>
+                <input name="nft_desc" required type="text" class="form-control form-control-lg" 
+                id="nft_desc" aria-describedby="emailHelp" form="nftgenform">
+                <div id="emailHelp" class="form-text">Please enter description for your NFT</div>
+              </div>
+            </div>
+            </main>
+          </div>
+          <div class="col-12 col-md-7 col-lg-6 col-xl-5 d-flex align-items-start flex-column px-vw-5">
+            <main class="mb-auto col-12" style="margin-top: 23%;">
+              <form class="row" method="post" id="nftgenform" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="col-12">
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label">Image</label>
+                  <br>
+                  <img src="{% static 'images/upload_img.jpg' %}" id = "previewimg"
+                  style="margin-bottom: 4%;">
+                  <input name="nft_img" required type="file" class="form-control form-control-lg" 
+                  id="nft_img" aria-describedby="emailHelp" accept="image/*"
+                  onChange="changeimg()">
+                  <div id="emailHelp" class="form-text">Please upload an image for your NFT</div>
+                </div>
+                <button type="submit" class="btn btn-white btn-xl mb-4">Create NFT</button>
+              </div>
+            </form>
+            </main>
+          </div>
+        </div>
+      </div></body>
+    </html>
