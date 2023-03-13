@@ -13,9 +13,7 @@ from deepmint.settings import BASE_DIR
 import os
 from PIL import Image
 from dotenv import load_dotenv
-from web3 import Web3
-ganache_url = "http://127.0.0.1:7545"
-web3 = Web3(Web3.HTTPProvider(ganache_url))
+import json
 load_dotenv()
 
 # Create your views here.
@@ -206,11 +204,17 @@ def profile_view(request):
     if request.method == 'GET':
         art = Digital_Art.objects.filter(owner=request.user)
         return render(request, 'profile.html', {'digital_art': art})
-    else:
+
+    elif 'updateprofile' in request.POST:
         if 'profilepic' in request.FILES:
             profile_pic = request.FILES['profilepic']
             profile = Profile.objects.update_or_create(user=request.user,
                                                        defaults={'profile_pic': profile_pic})
+        return redirect(profile_view)
+
+    elif 'newcollection' in request.POST:
+        name = request.POST.get('collection_name')
+        symbol = request.POST.get('collection_symbol')
         return redirect(profile_view)
 
 

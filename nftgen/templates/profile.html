@@ -36,6 +36,27 @@
       object-fit: cover !important;
     }
 
+    #loader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: none;
+}
+
+#loader img {
+  display: block;
+  margin: 0 auto;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .filter-button
 {
     font-size: 18px !important;
@@ -87,6 +108,10 @@ hr {
   background-color: white !important;
 }
 
+.newcollectionbtn:hover {
+  background-color: white !important;
+}
+
 .img-responsive {
   width: 365px;
   height: 365px;
@@ -115,7 +140,9 @@ figcaption {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   </head>
+  <script type="text/javascript" src="{% static 'js/web3.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/create_nftcollection.js' %}"></script>
   <script>
     $(document).ready(function(){
       $(".filter").not('.'+'art').hide('3000');
@@ -217,7 +244,7 @@ $(".filter-button").click(function(){
             <input name="profilepic" hidden type="file" class="form-control form-control-md" 
                   id="profilepic" aria-describedby="emailHelp" accept="image/*" onChange="changeimg()">
               <button type="submit" class="btn btn-white btn-lg mt-3 updatebtn"
-              style="margin-bottom: 0px;">Update Profile</button>
+              style="margin-bottom: 0px;" name="updateprofile">Update Profile</button>
           </form>
         </div>
 
@@ -235,10 +262,10 @@ $(".filter-button").click(function(){
           <hr style="border: gray solid 1px;">
           <p style="font-size: 94%; margin-bottom: 5px;">NFTs Generated : {{ user.likes.count }}</p>
           <hr style="border: gray solid 1px;">
-          <p style="font-size: 94%; margin-bottom: 5px;">Total Likes : {{ user.likes.count }}</p>
+          <p style="font-size: 94%; margin-bottom: 5px;">NFT Collections : {{ user.likes.count }}</p>
           <hr style="border: gray solid 1px;">
-          <p style="font-size: 94%; margin-bottom: 5px;">Rank : {{ user.likes.count }}</p>
-          <hr style="border: gray solid 1px;">
+          <button type="button" class="btn btn-white btn-lg mb-3 newcollectionbtn"
+              style="margin-bottom: 0px;" data-toggle="modal" data-target="#newCollectionModal">Create NFT Collection</button>
         </div>
       </div>
     </div>
@@ -264,47 +291,44 @@ $(".filter-button").click(function(){
 
           <!-- <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter sprinkle">
               <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-          </div>
-
-          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
-              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-          </div>
-
-          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
-              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-          </div>
-
-          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter spray">
-              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-          </div>
-
-          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
-              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-          </div>
-
-          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter spray">
-              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-          </div>
-
-          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
-              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-          </div>
-
-          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
-              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-          </div>
-
-          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
-              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-          </div>
-
-          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter spray">
-              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-          </div>
-
-          <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter sprinkle">
-              <img src="http://fakeimg.pl/365x365/" class="img-responsive">
           </div> -->
+
+          <div id="loader">
+            <img src="{% static 'images/loader.gif' %}">
+          </div>
+
+          <!-- Modal -->
+          <div class="modal fade" id="newCollectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Create New NFT Collection</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <form>
+                  <div class="modal-body">
+                      <div class="form-group">
+                        <label for="collection_name">Name</label>
+                        <input type="text" required class="form-control" id="collection_name"
+                        name="collection_name" placeholder="Enter a name for your NFT collection">
+                      </div>
+                      <div class="form-group">
+                        <label for="collection_symbol">Symbol</label>
+                        <input type="text" required class="form-control" id="collection_symbol"
+                        name="collection_symbol" placeholder="Enter a symbol for your NFT collection">
+                      </div>
+                  </div>
+                </form>
+                  <div class="modal-footer">
+                    <button type="submit"
+                    name="newcollection" id="newcollection" 
+                    class="btn btn-primary" onclick="create_collection()">Create</button>
+                  </div>
+              </div>
+            </div>
+          </div>
       </div>
   </div>
 </section>
