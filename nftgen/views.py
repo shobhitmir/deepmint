@@ -14,7 +14,11 @@ import os
 from PIL import Image
 from dotenv import load_dotenv
 import json
+import requests
 load_dotenv()
+
+pinata_api_key = '22757a7ae1c143ba9b8b'
+pinata_api_secret = 'e21c5c1c34ba012d31ce2eb7c36aa2e3c80e5e5c11cbb6e8ffa4bdd8f9873037'
 
 # Create your views here.
 
@@ -218,5 +222,55 @@ def profile_view(request):
         return redirect(profile_view)
 
 
+def upload_img_to_pinata(file):
+    endpoint = 'https://api.pinata.cloud/pinning/pinFileToIPFS'
+    headers = {
+        'pinata_api_key': pinata_api_key,
+        'pinata_secret_api_key': pinata_api_secret,
+    }
+    data = {
+        'file': (file.name, file.read()),
+    }
+    response = requests.post(endpoint, headers=headers, files=data)
+    return response.json()
+
+
+def create_metadata(name, description, image_ipfs_hash):
+    metadata = {'name': name, 'description': description,
+                'image': f'https://ipfs.io/ipfs/{image_ipfs_hash}'}
+    return json.dumps(metadata)
+
+
+def pin_metadata_to_ipfs(metadata):
+    endpoint = 'https://api.pinata.cloud/pinning/pinJSONToIPFS'
+
+    headers = {
+        'pinata_api_key': pinata_api_key,
+        'pinata_secret_api_key': pinata_api_secret,
+    }
+
+    payload = {
+        'pinataOptions': {
+            'cidVersion': 1,
+        },
+        'pinataContent': metadata,
+    }
+    response = requests.post(endpoint, headers=headers, json=payload)
+    ipfs_hash = response.json()['IpfsHash']
+    return f'https://ipfs.io/ipfs/{ipfs_hash}'
+
+
 def nftgen_view(request):
-    return render(request, 'nftgen.html')
+    if request.method == 'GET':
+        return render(request, 'nftgen.html')
+    else:
+        name = request.POST.get('nft_name')
+        desc = request.POST.get('nft_desc')
+        img = request.FILES['nft_img']
+        # response = upload_img_to_pinata(img)
+        # ipfs_hash = response['IpfsHash']
+        ipfs_hash = 'QmeeD8xDx2BYvinjvJKSsodiVTjteBurZkdS1QDYfdGYSj'
+        metadata = create_metadata(name, desc, ipfs_hash)
+        metadata_uri = pin_metadata_to_ipfs(metadata)
+        print(metadata_uri)
+        return render(request, 'nftgen.html')
