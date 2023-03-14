@@ -149,6 +149,7 @@
           <div class="col-12 col-md-7 col-lg-6 col-xl-5 d-flex align-items-start flex-column px-vw-5">
             <main class="mb-auto col-12" style="margin-top: 23%;">
               <form class="row" id="nftgenform" enctype="multipart/form-data">
+              {% csrf_token %}
               <div class="col-12">
                 <div class="mb-3">
                   <label for="exampleInputEmail1" class="form-label">Image</label>

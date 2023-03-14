@@ -122,6 +122,17 @@ hr {
   cursor: pointer;
 }
 
+#collection_img:hover 
+{
+    cursor: pointer;
+}
+
+#previewimg {
+  object-fit: cover;
+  width: 80px;
+  height: 80px;
+}
+
 figcaption {
       color:white !important;
       font-weight: bolder;
@@ -144,11 +155,17 @@ figcaption {
   <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/create_nftcollection.js' %}"></script>
   <script>
-    $(document).ready(function(){
-      $(".filter").not('.'+'art').hide('3000');
-      $('.filter').filter('.'+'art').show('3000');
+
+  $(document).ready(function(){
+    $(".filter").not('.'+'art').hide('3000');
+    $('.filter').filter('.'+'art').show('3000');
 
 $(".filter-button").click(function(){
+  var divs = document.querySelectorAll("[id^='display_collections']");
+  // Set hidden property to true for all divs
+  divs.forEach(function(div) {
+    div.hidden = false;
+  });
     var buttons = document.querySelectorAll('.filter-button');
     console.log(buttons)
     for (var i = 0; i < buttons.length; i++) {
@@ -167,6 +184,13 @@ $(".filter-button").click(function(){
         const img = document.getElementById('profilepic').files[0]
         const bgUrl = URL.createObjectURL(img)
         document.getElementById('profpic').src = bgUrl
+    }
+
+    const changelogo = (e) =>
+    {
+        const img = document.getElementById('collection_img').files[0]
+        const bgUrl = URL.createObjectURL(img)
+        document.getElementById('previewimg').src = bgUrl
     }
   </script>
 
@@ -262,7 +286,7 @@ $(".filter-button").click(function(){
           <hr style="border: gray solid 1px;">
           <p style="font-size: 94%; margin-bottom: 5px;">NFTs Generated : {{ user.likes.count }}</p>
           <hr style="border: gray solid 1px;">
-          <p style="font-size: 94%; margin-bottom: 5px;">NFT Collections : {{ user.likes.count }}</p>
+          <p style="font-size: 94%; margin-bottom: 5px;">NFT Collections : {{ nft_collections | length }}</p>
           <hr style="border: gray solid 1px;">
           <button type="button" class="btn btn-white btn-lg mb-3 newcollectionbtn"
               style="margin-bottom: 0px;" data-toggle="modal" data-target="#newCollectionModal">Create NFT Collection</button>
@@ -275,17 +299,28 @@ $(".filter-button").click(function(){
         <div align="center">
           <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
             <button class="btn btn-default filter-button active" data-filter="art">Generated Art</button>
+            <button class="btn btn-default filter-button" data-filter="collections">NFT Collections</button>
             <button class="btn btn-default filter-button" data-filter="nfts">Generated NFTs</button>
-            <button class="btn btn-default filter-button" data-filter="posts">Posts</button>
           </div>
         </div>
       <br/>
+          
           {% for art in digital_art %}
           <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter art">
             <a href="{% url 'art' id=art.id %}">
             <img src="{{art.gen_image.url}}" class="img-responsive">
             </a>
             <figcaption class="figure-caption text-justified"><p>{{art.prompt}}</p></figcaption>
+          </div>
+          {% endfor %}
+        
+          {% for collection in nft_collections %}
+          <div hidden class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter collections"
+          id="display_collections">
+            <a href="https://testnets.opensea.io/assets/goerli/{{ collection.contract_address|add:'/' }}" target="_blank">
+              <img src="{{collection.logo.url}}" class="img-responsive">
+            </a>
+            <figcaption class="figure-caption text-justified"><p>{{collection.name}} ({{collection.symbol}})</p></figcaption>
           </div>
           {% endfor %}
 
@@ -307,7 +342,7 @@ $(".filter-button").click(function(){
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-                <form>
+                <form id="collection-form" enctype="multipart/form-data">
                   <div class="modal-body">
                       <div class="form-group">
                         <label for="collection_name">Name</label>
@@ -318,6 +353,16 @@ $(".filter-button").click(function(){
                         <label for="collection_symbol">Symbol</label>
                         <input type="text" required class="form-control" id="collection_symbol"
                         name="collection_symbol" placeholder="Enter a symbol for your NFT collection">
+                      </div>
+                      <div class="form-group">
+                        <label for="collection_image" class="form-label">Logo</label>
+                        <br>
+                        <img src="{% static 'images/sample_collection.jpg' %}" id = "previewimg"
+                        style="margin-bottom: 4%;">
+                        <input name="collection_img" type="file" class="form-control form-control-md" 
+                        id="collection_img" aria-describedby="emailHelp" accept="image/*"
+                        onChange="changelogo()">
+                        <div id="emailHelp" class="form-text">Please upload a logo for your collection</div>
                       </div>
                   </div>
                 </form>

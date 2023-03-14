@@ -363,7 +363,7 @@ const ABI = [
   }
 ]
 
-const contractAddress = '0x6bFc169FA2e2625Be0052fD4bf5eaaBdc8B1c7c6'
+const contractAddress = '0xD0d6a212B28a36aaf6766E59b628cfDBcC769ec5'
 
 const create_nft = async(metadata_uri) =>
 {

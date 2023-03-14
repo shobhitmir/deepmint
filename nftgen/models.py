@@ -25,6 +25,20 @@ class Digital_Art(models.Model):
         verbose_name_plural = 'Digital_Art'
 
 
+class NFT_Collection(models.Model):
+    owner = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='collection', blank=False, null=False)
+    contract_address = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    symbol = models.CharField(max_length=100)
+    logo = models.ImageField(upload_to='collection_logos/', blank=False, null=False,
+                             default='default-collection.jpg')
+
+    class Meta:
+        verbose_name = 'NFT_Collection'
+        verbose_name_plural = 'NFT_Collection'
+
+
 class Profile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='profile')

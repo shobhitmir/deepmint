@@ -362,6 +362,44 @@ const ABI = [
     }
   ]
 
+  function getCsrfToken() {
+    const csrfCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+    if (!csrfCookie) {
+      return null;
+    }
+    return csrfCookie.split('=')[1];
+  }
+
+function save_collection(name,symbol,contract_address) 
+{
+    var csrftoken = getCsrfToken()
+    const form = document.querySelector('#collection-form');
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('symbol', symbol);
+    formData.append('contract_address', contract_address);
+    formData.append('logo', form.elements.collection_img.files[0]);
+
+    $.ajax({
+      type: 'POST',
+      url: '/profile/',
+      headers: {'X-CSRFToken': csrftoken},
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function(data) {
+        loader.style.display = 'none';
+        window.alert(`Contract deployed at address ${contract_address}`);
+        console.log('NFT collection saved successfully!');
+        location.reload()
+      },
+      error: function(xhr, textStatus, errorThrown) {
+        console.log('Error saving NFT collection:', errorThrown);
+        location.reload()
+      }
+    });
+}
+
 const create_collection = async()  => {
         // Get the user's Ethereum address from MetaMask
         const loader = document.getElementById('loader');
@@ -372,6 +410,7 @@ const create_collection = async()  => {
         const userNFTContract = new web3.eth.Contract(ABI);
         const name = document.getElementById('collection_name').value
         const symbol = document.getElementById('collection_symbol').value
+
 
         if (name === '')
             window.alert('Name is a required field...')
@@ -390,9 +429,7 @@ const create_collection = async()  => {
             .then((newContractInstance) => {
                 const contract_address = newContractInstance.options.address
                 console.log(`Contract deployed: ${contract_address}`)
-                loader.style.display = 'none';
-                window.alert(`Contract deployed at address ${contract_address}`);
-                location.reload();
+                save_collection(name,symbol,contract_address)
             });
         }
 };

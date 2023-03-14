@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from cryptoaddress import get_crypto_address
 from django.contrib.auth import authenticate, login, logout
-from .models import Digital_Art, Profile
+from .models import Digital_Art, Profile, NFT_Collection
 import requests
 from django.core.files.base import ContentFile
 import time
@@ -15,6 +15,7 @@ from PIL import Image
 from dotenv import load_dotenv
 import json
 import requests
+from django.http import JsonResponse
 load_dotenv()
 
 pinata_api_key = '22757a7ae1c143ba9b8b'
@@ -207,7 +208,9 @@ def art_view(request, id):
 def profile_view(request):
     if request.method == 'GET':
         art = Digital_Art.objects.filter(owner=request.user)
-        return render(request, 'profile.html', {'digital_art': art})
+        collections = NFT_Collection.objects.filter(owner=request.user)
+        return render(request, 'profile.html', {'digital_art': art,
+                                                'nft_collections': collections})
 
     elif 'updateprofile' in request.POST:
         if 'profilepic' in request.FILES:
@@ -216,10 +219,23 @@ def profile_view(request):
                                                        defaults={'profile_pic': profile_pic})
         return redirect(profile_view)
 
-    elif 'newcollection' in request.POST:
-        name = request.POST.get('collection_name')
-        symbol = request.POST.get('collection_symbol')
-        return redirect(profile_view)
+    elif request.is_ajax():
+        name = request.POST.get('name')
+        symbol = request.POST.get('symbol')
+        contract_address = request.POST.get('contract_address')
+        # create new instance of NFTCollection model
+        if 'logo' in request.FILES:
+            logo = request.FILES.get('logo')
+            nft_collection = NFT_Collection(
+                name=name, symbol=symbol, contract_address=contract_address,
+                owner=request.user, logo=logo)
+            nft_collection.save()
+        else:
+            nft_collection = NFT_Collection(
+                name=name, symbol=symbol, contract_address=contract_address,
+                owner=request.user)
+            nft_collection.save()
+        return JsonResponse({'status': 'success'})
 
 
 def upload_img_to_pinata(file):
@@ -264,13 +280,4 @@ def nftgen_view(request):
     if request.method == 'GET':
         return render(request, 'nftgen.html')
     else:
-        name = request.POST.get('nft_name')
-        desc = request.POST.get('nft_desc')
-        img = request.FILES['nft_img']
-        # response = upload_img_to_pinata(img)
-        # ipfs_hash = response['IpfsHash']
-        ipfs_hash = 'QmeeD8xDx2BYvinjvJKSsodiVTjteBurZkdS1QDYfdGYSj'
-        metadata = create_metadata(name, desc, ipfs_hash)
-        metadata_uri = pin_metadata_to_ipfs(metadata)
-        print(metadata_uri)
         return render(request, 'nftgen.html')
