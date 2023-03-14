@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from cryptoaddress import get_crypto_address
 from django.contrib.auth import authenticate, login, logout
-from .models import Digital_Art, Profile, NFT_Collection
+from .models import Digital_Art, Profile, NFT_Collection, NFT
 import requests
 from django.core.files.base import ContentFile
 import time
@@ -209,8 +209,10 @@ def profile_view(request):
     if request.method == 'GET':
         art = Digital_Art.objects.filter(owner=request.user)
         collections = NFT_Collection.objects.filter(owner=request.user)
+        nfts = NFT.objects.filter(owner=request.user)
         return render(request, 'profile.html', {'digital_art': art,
-                                                'nft_collections': collections})
+                                                'nft_collections': collections,
+                                                'nfts': nfts})
 
     elif 'updateprofile' in request.POST:
         if 'profilepic' in request.FILES:
@@ -278,6 +280,20 @@ def pin_metadata_to_ipfs(metadata):
 
 def nftgen_view(request):
     if request.method == 'GET':
-        return render(request, 'nftgen.html')
+        collections = NFT_Collection.objects.filter(owner=request.user)
+        return render(request, 'nftgen.html', {'nft_collections': collections})
+
+    elif request.is_ajax():
+        name = request.POST.get('name')
+        desc = request.POST.get('description')
+        contract_address = request.POST.get('contract_address')
+        nft_img_url = request.POST.get('image_url')
+        tokenid = request.POST.get('tokenid')
+        nft = NFT(
+            name=name, description=desc, contract_address=contract_address,
+            owner=request.user, image_url=nft_img_url, token_id=tokenid)
+        nft.save()
+        return JsonResponse({'status': 'success'})
+
     else:
         return render(request, 'nftgen.html')

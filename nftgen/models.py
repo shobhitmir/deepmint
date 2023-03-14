@@ -39,6 +39,21 @@ class NFT_Collection(models.Model):
         verbose_name_plural = 'NFT_Collection'
 
 
+class NFT(models.Model):
+    owner = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='nft', blank=False, null=False)
+    contract_address = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=1000)
+    image_url = models.CharField(max_length=200)
+    token_id = models.CharField(
+        max_length=100, blank=False, null=False, default='0')
+
+    class Meta:
+        verbose_name = 'NFT'
+        verbose_name_plural = 'NFT'
+
+
 class Profile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='profile')

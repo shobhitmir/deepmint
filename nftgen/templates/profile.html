@@ -166,8 +166,14 @@ $(".filter-button").click(function(){
   divs.forEach(function(div) {
     div.hidden = false;
   });
+
+  divs_nfts = document.querySelectorAll("[id^='display_nfts']");
+  // Set hidden property to true for all divs
+  divs_nfts.forEach(function(div) {
+    div.hidden = false;
+  });
+
     var buttons = document.querySelectorAll('.filter-button');
-    console.log(buttons)
     for (var i = 0; i < buttons.length; i++) {
       buttons[i].classList.remove('active');
     }
@@ -284,7 +290,7 @@ $(".filter-button").click(function(){
           <h4 class="font-weight-bold">Stats</h4>
           <p style="font-size: 94%; margin-bottom: 5px;">Art Generated : {{ digital_art | length}}</p>
           <hr style="border: gray solid 1px;">
-          <p style="font-size: 94%; margin-bottom: 5px;">NFTs Generated : {{ user.likes.count }}</p>
+          <p style="font-size: 94%; margin-bottom: 5px;">NFTs Generated : {{ nfts | length }}</p>
           <hr style="border: gray solid 1px;">
           <p style="font-size: 94%; margin-bottom: 5px;">NFT Collections : {{ nft_collections | length }}</p>
           <hr style="border: gray solid 1px;">
@@ -321,6 +327,16 @@ $(".filter-button").click(function(){
               <img src="{{collection.logo.url}}" class="img-responsive">
             </a>
             <figcaption class="figure-caption text-justified"><p>{{collection.name}} ({{collection.symbol}})</p></figcaption>
+          </div>
+          {% endfor %}
+
+          {% for nft in nfts %}
+          <div hidden class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter nfts"
+          id="display_nfts">
+            <a href="https://testnets.opensea.io/assets/goerli/{{ nft.contract_address |add:'/' }}{{ nft.token_id }}" target="_blank">
+              <img src="{{nft.image_url}}" class="img-responsive">
+            </a>
+            <figcaption class="figure-caption text-justified"><p>{{nft.name}}</p></figcaption>
           </div>
           {% endfor %}
 

@@ -50,6 +50,27 @@
     .dropdown-menu a:hover {
       background-color: black;
     }
+
+    #loader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: none;
+}
+
+#loader img {
+  display: block;
+  margin: 0 auto;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
   </style>
   <link rel="stylesheet" href="{% static 'css/theme.min.css' %}">
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -143,6 +164,15 @@
                 id="nft_desc" aria-describedby="emailHelp" form="nftgenform">
                 <div id="emailHelp" class="form-text">Please enter description for your NFT</div>
               </div>
+              <div class="form-group mb-3">
+                <label for="exampleFormControlSelect1">Select NFT Collection</label>
+                <select name="collection_selector" id="collection_selector" class="form-control" id="exampleFormControlSelect1">
+                  <option value="0x021700efd17cbe21968c8f66093b41686c628541">DeepMintNFT Collection</option>
+                  {% for collection in nft_collections %}
+                  <option value="{{collection.contract_address}}">{{collection.name}}</option>
+                  {% endfor %}
+                </select>
+              </div>
             </div>
             </main>
           </div>
@@ -167,5 +197,9 @@
             </main>
           </div>
         </div>
-      </div></body>
+      </div>
+      <div id="loader">
+        <img src="{% static 'images/loader.gif' %}">
+      </div>
+    </body>
     </html>

@@ -363,22 +363,74 @@ const ABI = [
   }
 ]
 
-const contractAddress = '0xD0d6a212B28a36aaf6766E59b628cfDBcC769ec5'
+function getCsrfToken() {
+  const csrfCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+  if (!csrfCookie) {
+    return null;
+  }
+  return csrfCookie.split('=')[1];
+}
 
-const create_nft = async(metadata_uri) =>
+function save_nft(nft_image_url, tx_receipt, tokenid)
+{
+    var csrftoken = getCsrfToken()
+    const form = document.querySelector('#nftgenform');
+    const name = document.getElementById('nft_name').value
+    const desc = document.getElementById('nft_desc').value
+    const contract_address = document.getElementById("collection_selector").value;
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('description', desc);
+    formData.append('contract_address', contract_address);
+    formData.append('image_url', nft_image_url);
+    formData.append('tokenid', tokenid);
+
+    $.ajax({
+      type: 'POST',
+      url: '/nftgen/',
+      headers: {'X-CSRFToken': csrftoken},
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function(data) {
+        window.alert(`NFT Minted Successfully : ${JSON.stringify(tx_receipt)}`);
+        console.log('NFT saved successfully!');
+        loader.style.display = 'none';
+        location.reload()
+      },
+      error: function(xhr, textStatus, errorThrown) {
+        console.log('Error saving NFT:', errorThrown);
+        location.reload()
+      }
+    });
+}
+
+const create_nft = async(metadata_uri, nft_image_url) =>
 {
   const web3 = new Web3(window.ethereum);
   const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
   const fromAddress = accounts[0];
+
+  const contractAddress = document.getElementById("collection_selector").value;
 
   const UserNFTContract = new web3.eth.Contract(ABI, contractAddress);
   UserNFTContract.methods.mintNFT(metadata_uri)
   .send({ from: fromAddress })
   .then(receipt => {
     console.log("Transaction receipt: ", receipt);
+    var tokenid = 0;
+    if (receipt.events.Transfer)
+    {
+      tokenid = receipt.events.Transfer.returnValues.tokenId
+    }
+    console.log(tokenid)
+    save_nft(nft_image_url, receipt,tokenid)
   })
   .catch(error => {
     console.error("Error occurred: ", error);
+    window.alert(error.message)
+    loader.style.display = 'none';
   });
 }
 
@@ -387,7 +439,20 @@ const create_metadata = async()  =>
     const form = document.getElementById('nftgenform');
     const name = document.getElementById('nft_name').value
     const desc = document.getElementById('nft_desc').value
+
+    if (name === '')
+    {
+        window.alert('Name is a required field...')
+        return
+    }
+    else if (desc === '')
+    {
+        window.alert('Description is a required field...')
+        return
+    }
     
+    loader.style.display = 'block';
+
     const formData = new FormData(form);
     const file = formData.get('nft_img')
     const imgformData = new FormData()
@@ -429,7 +494,7 @@ const create_metadata = async()  =>
           .then(data => {
             metadata_hash = data.IpfsHash
             const metadata_uri = "https://ipfs.io/ipfs/" + metadata_hash
-            create_nft(metadata_uri)
+            create_nft(metadata_uri, image_url)
           })
           .catch(error => {
             console.error(error);
