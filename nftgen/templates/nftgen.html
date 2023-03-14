@@ -57,8 +57,9 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
   </head>
-  <script type="text/javascript" src="{% static 'js/create_nft.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/web3.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/create_nft.js' %}"></script>
   <script type="text/javascript">
     const changeimg = (e) =>
     {
@@ -159,7 +160,7 @@
                   onChange="changeimg()">
                   <div id="emailHelp" class="form-text">Please upload an image for your NFT</div>
                 </div>
-                <button type="button" onclick="create_nft(event)" class="btn btn-white btn-xl mb-4">Create NFT</button>
+                <button type="button" onclick="create_metadata(event)" class="btn btn-white btn-xl mb-4">Create NFT</button>
               </div>
             </form>
             </main>
