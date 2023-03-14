@@ -10,10 +10,11 @@ contract UserNFT is ERC721URIStorage {
     Counters.Counter private _tokenIdCounter;
     uint256 MAX_SUPPLY = 1000000;
 
-    constructor(
-        string memory name,
-        string memory symbol
-    ) ERC721(name, symbol) {}
+    constructor(string memory name, string memory symbol) ERC721(name, symbol) {
+        mintNFT(
+            "https://ipfs.io/ipfs/QmXNnAHjc7z5gbpdUkJX5Mu2iQz5GrGLjfr8HkFinZLjqS"
+        );
+    }
 
     function mintNFT(string memory tokenURI) public {
         require(
