@@ -17,6 +17,7 @@ import json
 import requests
 from django.http import JsonResponse
 from urllib.parse import unquote
+from django.contrib.auth.decorators import login_required
 load_dotenv()
 
 pinata_api_key = '22757a7ae1c143ba9b8b'
@@ -143,6 +144,7 @@ def generate_art(prompt, prompt_strength, init_image, seed, iters):
     return gen_img_url, init_img_file
 
 
+@login_required
 def artgen_view(request):
     if request.method == 'GET':
         return render(request, 'artgen.html')
@@ -201,12 +203,14 @@ def artgen_view(request):
         return redirect(art_view, digital_art.id)
 
 
+@login_required
 def art_view(request, id):
     art = Digital_Art.objects.filter(id=id).first()
     gen_img_path = os.path.basename(art.gen_image.url)
     return render(request, 'art.html', {'art': art, 'gen_img_path': gen_img_path})
 
 
+@login_required
 def profile_view(request):
     if request.method == 'GET':
         art = Digital_Art.objects.filter(owner=request.user)
@@ -280,6 +284,7 @@ def pin_metadata_to_ipfs(metadata):
     return f'https://ipfs.io/ipfs/{ipfs_hash}'
 
 
+@login_required
 def nftgen_view(request, description='', image=''):
     if request.method == 'GET':
         gen_img_path = ''
