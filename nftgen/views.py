@@ -20,14 +20,12 @@ from urllib.parse import unquote
 from django.contrib.auth.decorators import login_required
 load_dotenv()
 
-pinata_api_key = '22757a7ae1c143ba9b8b'
-pinata_api_secret = 'e21c5c1c34ba012d31ce2eb7c36aa2e3c80e5e5c11cbb6e8ffa4bdd8f9873037'
-
 # Create your views here.
 
 
 def landing_view(request):
-    return render(request, 'landing.html')
+    DEEPMINT_NFT_ADDRESS = os.environ.get('DEEPMINT_NFT_ADDRESS')
+    return render(request, 'landing.html', {"deepmint_nft_address": DEEPMINT_NFT_ADDRESS})
 
 
 def logout_view(request):
@@ -246,54 +244,22 @@ def profile_view(request):
         return JsonResponse({'status': 'success'})
 
 
-def upload_img_to_pinata(file):
-    endpoint = 'https://api.pinata.cloud/pinning/pinFileToIPFS'
-    headers = {
-        'pinata_api_key': pinata_api_key,
-        'pinata_secret_api_key': pinata_api_secret,
-    }
-    data = {
-        'file': (file.name, file.read()),
-    }
-    response = requests.post(endpoint, headers=headers, files=data)
-    return response.json()
-
-
-def create_metadata(name, description, image_ipfs_hash):
-    metadata = {'name': name, 'description': description,
-                'image': f'https://ipfs.io/ipfs/{image_ipfs_hash}'}
-    return json.dumps(metadata)
-
-
-def pin_metadata_to_ipfs(metadata):
-    endpoint = 'https://api.pinata.cloud/pinning/pinJSONToIPFS'
-
-    headers = {
-        'pinata_api_key': pinata_api_key,
-        'pinata_secret_api_key': pinata_api_secret,
-    }
-
-    payload = {
-        'pinataOptions': {
-            'cidVersion': 1,
-        },
-        'pinataContent': metadata,
-    }
-    response = requests.post(endpoint, headers=headers, json=payload)
-    ipfs_hash = response.json()['IpfsHash']
-    return f'https://ipfs.io/ipfs/{ipfs_hash}'
-
-
 @login_required
 def nftgen_view(request, description='', image=''):
     if request.method == 'GET':
+        PINATA_API_KEY = os.environ.get('PINATA_API_KEY')
+        PINATA_API_SECRET = os.environ.get('PINATA_API_SECRET')
+        DEEPMINT_NFT_ADDRESS = os.environ.get('DEEPMINT_NFT_ADDRESS')
         gen_img_path = ''
         if image != '':
             gen_img_path = '/media/generated_images/' + unquote(image)
         collections = NFT_Collection.objects.filter(owner=request.user)
         return render(request, 'nftgen.html', {'nft_collections': collections,
                                                'nft_description': description,
-                                               'nft_image': gen_img_path})
+                                               'nft_image': gen_img_path,
+                                               'pinata_api_key': PINATA_API_KEY,
+                                               'pinata_api_secret': PINATA_API_SECRET,
+                                               'deepmint_nft_address': DEEPMINT_NFT_ADDRESS})
 
     elif request.is_ajax():
         name = request.POST.get('name')

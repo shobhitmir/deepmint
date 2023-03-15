@@ -80,7 +80,10 @@
   </head>
   <script>
     var nft_image_url = "{{ nft_image }}";
+    const PINATA_API_KEY = "{{ pinata_api_key }}";
+    const PINATA_API_SECRET = "{{ pinata_api_secret }}";
   </script>
+
   <script type="text/javascript" src="{% static 'js/web3.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/create_nft.js' %}"></script>
@@ -170,7 +173,7 @@
               <div class="form-group mb-3">
                 <label for="exampleFormControlSelect1">Select NFT Collection</label>
                 <select name="collection_selector" id="collection_selector" class="form-control" id="exampleFormControlSelect1">
-                  <option value="0x021700efd17cbe21968c8f66093b41686c628541">DeepMintNFT Collection</option>
+                  <option value="{{deepmint_nft_address}}">DeepMintNFT Collection</option>
                   {% for collection in nft_collections %}
                   <option value="{{collection.contract_address}}">{{collection.name}}</option>
                   {% endfor %}

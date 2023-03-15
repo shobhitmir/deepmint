@@ -1,5 +1,5 @@
-const pinata_api_key = "22757a7ae1c143ba9b8b"
-const pinata_secret_api_key = "e21c5c1c34ba012d31ce2eb7c36aa2e3c80e5e5c11cbb6e8ffa4bdd8f9873037"
+const pinata_api_key = PINATA_API_KEY
+const pinata_secret_api_key = PINATA_API_SECRET
 
 const ABI = [
   {
