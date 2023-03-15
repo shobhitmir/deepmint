@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 import json
 import requests
 from django.http import JsonResponse
+from urllib.parse import unquote
 load_dotenv()
 
 pinata_api_key = '22757a7ae1c143ba9b8b'
@@ -202,7 +203,8 @@ def artgen_view(request):
 
 def art_view(request, id):
     art = Digital_Art.objects.filter(id=id).first()
-    return render(request, 'art.html', {'art': art})
+    gen_img_path = os.path.basename(art.gen_image.url)
+    return render(request, 'art.html', {'art': art, 'gen_img_path': gen_img_path})
 
 
 def profile_view(request):
@@ -278,10 +280,15 @@ def pin_metadata_to_ipfs(metadata):
     return f'https://ipfs.io/ipfs/{ipfs_hash}'
 
 
-def nftgen_view(request):
+def nftgen_view(request, description='', image=''):
     if request.method == 'GET':
+        gen_img_path = ''
+        if image != '':
+            gen_img_path = '/media/generated_images/' + unquote(image)
         collections = NFT_Collection.objects.filter(owner=request.user)
-        return render(request, 'nftgen.html', {'nft_collections': collections})
+        return render(request, 'nftgen.html', {'nft_collections': collections,
+                                               'nft_description': description,
+                                               'nft_image': gen_img_path})
 
     elif request.is_ajax():
         name = request.POST.get('name')

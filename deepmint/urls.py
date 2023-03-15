@@ -29,4 +29,5 @@ urlpatterns = [
     path('art/<int:id>/', art_view, name='art'),
     path('profile/', profile_view, name='profile'),
     path('nftgen/', nftgen_view, name='nftgen'),
+    path('nftgen/<str:description>/<str:image>', nftgen_view, name='nftgen'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

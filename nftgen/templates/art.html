@@ -1,5 +1,6 @@
 {% load static %}
 
+
 <!doctype html>
 <html class="h-100" lang="en">
 
@@ -81,7 +82,7 @@
       rgba(0, 0, 0, 0.7),
       rgba(0, 0, 0, 0.7)
     ),
-      url('../../static/images/art_bg.jpg');
+      url('/static/images/art_bg.jpg');
       background-repeat: repeat-y;
       background-size: cover;
     }
@@ -182,8 +183,9 @@
           <br>
           <div class="btn-group ml-2" role="group" aria-label="Button group with nested dropdown">
             <button type="button" class="btn btn-default" onclick="download_image()">Download Art</button>
-            <button type="button" class="btn btn-default">Create NFT</button>
-            <button type="button" class="btn btn-default">Post</button>
+            <button onclick="location.href='{% url 'nftgen' description=art.prompt image=gen_img_path|urlencode %}'"
+            type="button" class="btn btn-default">Create NFT</button>
+            <!-- <button type="button" class="btn btn-default">Post</button> -->
           </div>
         </div>
         <div class="col-md-4 mb-3">

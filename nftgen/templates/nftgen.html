@@ -32,7 +32,7 @@
       rgba(0, 0, 0, 0.6),
       rgba(0, 0, 0, 0.6)
     ),
-      url('../static/images/art_bg.jpg');
+      url('/static/images/art_bg.jpg');
       background-repeat: repeat-y;
       background-size: cover;
     }
@@ -78,6 +78,9 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
   </head>
+  <script>
+    var nft_image_url = "{{ nft_image }}";
+  </script>
   <script type="text/javascript" src="{% static 'js/web3.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/create_nft.js' %}"></script>
@@ -154,13 +157,13 @@
               <div class="col-12">
               <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Name</label>
-                <input name="nft_name" required type="text" class="form-control form-control-lg" 
+                <input name="nft_name" value="{{nft_description}}" required type="text" class="form-control form-control-lg" 
                 id="nft_name" aria-describedby="emailHelp" form="nftgenform">
                 <div id="emailHelp" class="form-text">Please enter a name for your NFT</div>
               </div>
               <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Description</label>
-                <input name="nft_desc" required type="text" class="form-control form-control-lg" 
+                <input name="nft_desc" value="{{nft_description}}" required type="text" class="form-control form-control-lg" 
                 id="nft_desc" aria-describedby="emailHelp" form="nftgenform">
                 <div id="emailHelp" class="form-text">Please enter description for your NFT</div>
               </div>
@@ -184,10 +187,15 @@
                 <div class="mb-3">
                   <label for="exampleInputEmail1" class="form-label">Image</label>
                   <br>
-                  <img src="{% static 'images/upload_img.jpg' %}" id = "previewimg"
+                  {% if nft_image == '' %}
+                    <img src="{% static 'images/upload_img.jpg' %}" id = "previewimg"
                   style="margin-bottom: 4%;">
+                  {% else %}
+                  <img src="{{nft_image}}" id = "previewimg"
+                  style="margin-bottom: 4%;">
+                  {% endif %}
                   <input name="nft_img" required type="file" class="form-control form-control-lg" 
-                  id="nft_img" aria-describedby="emailHelp" accept="image/*"
+                  id="nft_img" aria-describedby="emailHelp" accept="image/*" value="{{nft_image}}"
                   onChange="changeimg()">
                   <div id="emailHelp" class="form-text">Please upload an image for your NFT</div>
                 </div>

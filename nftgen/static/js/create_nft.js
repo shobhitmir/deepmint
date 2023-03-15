@@ -397,10 +397,10 @@ function save_nft(nft_image_url, tx_receipt, tokenid)
         window.alert(`NFT Minted Successfully : ${JSON.stringify(tx_receipt)}`);
         console.log('NFT saved successfully!');
         loader.style.display = 'none';
-        location.reload()
+        window.location.href = window.location.protocol + '//' + window.location.host + '/profile/';
       },
       error: function(xhr, textStatus, errorThrown) {
-        console.log('Error saving NFT:', errorThrown);
+        window.alert(`Error saving NFT: ${errorThrown}`);
         location.reload()
       }
     });
@@ -454,54 +454,125 @@ const create_metadata = async()  =>
     loader.style.display = 'block';
 
     const formData = new FormData(form);
-    const file = formData.get('nft_img')
-    const imgformData = new FormData()
-    imgformData.append("file", file);
-
-    const config = {
-		method: "POST",
-		maxContentLength: Infinity,
-		headers: {
-			pinata_api_key: pinata_api_key,
-			pinata_secret_api_key: pinata_secret_api_key,
-		},
-		body: imgformData,
-	};
-
-    try {
-		const response = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', config);
-		const data = await response.json();
-        hash = data.IpfsHash
-        image_url = "https://ipfs.io/ipfs/" + hash
-        const metadata = {
-            name: name,
-            description: desc,
-            image: image_url
-        }
-        const metadataString = JSON.stringify(metadata)
-        const headers = {
-            'Content-Type': 'application/json',
-            'pinata_api_key': pinata_api_key,
-            'pinata_secret_api_key': pinata_secret_api_key
-          };
-    
-          fetch('https://api.pinata.cloud/pinning/pinJSONToIPFS', {
-            method: 'POST',
-            headers: headers,
-            body: metadataString
-          })
-          .then(response => response.json())
-          .then(data => {
-            metadata_hash = data.IpfsHash
-            const metadata_uri = "https://ipfs.io/ipfs/" + metadata_hash
-            create_nft(metadata_uri, image_url)
-          })
-          .catch(error => {
-            console.error(error);
-          });
-	} 
-    catch (error) 
+    const fileInput = document.getElementById('nft_img');
+    if (fileInput.files.length > 0) 
     {
-		console.log(error)
-	}
+        const file = formData.get('nft_img')
+        const imgformData = new FormData()
+        imgformData.append("file", file)
+
+        const config = {
+          method: "POST",
+          maxContentLength: Infinity,
+          headers: {
+            pinata_api_key: pinata_api_key,
+            pinata_secret_api_key: pinata_secret_api_key,
+          },
+          body: imgformData,
+        };
+      
+          try {
+          const response = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', config);
+          const data = await response.json();
+              hash = data.IpfsHash
+              image_url = "https://ipfs.io/ipfs/" + hash
+              const metadata = {
+                  name: name,
+                  description: desc,
+                  image: image_url
+              }
+              const metadataString = JSON.stringify(metadata)
+              const headers = {
+                  'Content-Type': 'application/json',
+                  'pinata_api_key': pinata_api_key,
+                  'pinata_secret_api_key': pinata_secret_api_key
+                };
+          
+                fetch('https://api.pinata.cloud/pinning/pinJSONToIPFS', {
+                  method: 'POST',
+                  headers: headers,
+                  body: metadataString
+                })
+                .then(response => response.json())
+                .then(data => {
+                  metadata_hash = data.IpfsHash
+                  const metadata_uri = "https://ipfs.io/ipfs/" + metadata_hash
+                  create_nft(metadata_uri, image_url)
+                })
+                .catch(error => {
+                  console.error(error);
+                });
+        } 
+          catch (error) 
+          {
+          console.log(error)
+        }
+    } 
+    else if (nft_image_url === '')
+    {
+      window.alert('Please upload a file..')
+      loader.style.display = 'none';
+      return
+    }
+    else
+    {
+      nft_image_url = window.location.protocol + '//' + window.location.host + nft_image_url;
+      console.log(nft_image_url)
+      fetch(nft_image_url)
+        .then(response => response.blob())
+        .then(async(blob) => {
+          const imageName = nft_image_url.substring(nft_image_url.lastIndexOf('/')+1);
+          const file = new File([blob], imageName, { type: "image/png" });
+          const imgformData = new FormData()
+          imgformData.append("file", file)
+          console.log(file)
+          const config = {
+            method: "POST",
+            maxContentLength: Infinity,
+            headers: {
+              pinata_api_key: pinata_api_key,
+              pinata_secret_api_key: pinata_secret_api_key,
+            },
+            body: imgformData,
+          };
+        
+            try {
+            const response = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', config);
+            const data = await response.json();
+                hash = data.IpfsHash
+                image_url = "https://ipfs.io/ipfs/" + hash
+                const metadata = {
+                    name: name,
+                    description: desc,
+                    image: image_url
+                }
+                const metadataString = JSON.stringify(metadata)
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'pinata_api_key': pinata_api_key,
+                    'pinata_secret_api_key': pinata_secret_api_key
+                  };
+            
+                  fetch('https://api.pinata.cloud/pinning/pinJSONToIPFS', {
+                    method: 'POST',
+                    headers: headers,
+                    body: metadataString
+                  })
+                  .then(response => response.json())
+                  .then(data => {
+                    metadata_hash = data.IpfsHash
+                    const metadata_uri = "https://ipfs.io/ipfs/" + metadata_hash
+                    create_nft(metadata_uri, image_url)
+                  })
+                  .catch(error => {
+                    console.error(error);
+                  });
+          } 
+            catch (error) 
+            {
+            console.log(error)
+          }
+        })
+        .catch(error => console.error(error));
+    }
 }
