@@ -1,0 +1,14 @@
+{
+    "builds": [
+        {
+            "src": "deepmint/wsgi.py",
+            "use": "@vercel/python"
+        }
+    ],
+    "routes": [
+        {
+        "src": "/(.*)",
+        "dest": "deepmint/wsgi.py"
+    }
+    ]
+}
