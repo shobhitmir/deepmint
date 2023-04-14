@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 class Digital_Art(models.Model):
     init_image = models.ImageField(upload_to='initial_images/', blank=True,
-                                   default='default-noise.png')
+                                   default='default-noise_ea8wzb.png')
     gen_image = models.ImageField(
         upload_to='generated_images/', blank=False, null=False)
     prompt = models.TextField(blank=False, null=False)
@@ -32,7 +32,7 @@ class NFT_Collection(models.Model):
     name = models.CharField(max_length=100)
     symbol = models.CharField(max_length=100)
     logo = models.ImageField(upload_to='collection_logos/', blank=False, null=False,
-                             default='default-collection.jpg')
+                             default='default-collection_dfbpsd.jpg')
 
     class Meta:
         verbose_name = 'NFT_Collection'
@@ -58,7 +58,7 @@ class Profile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='profile')
     profile_pic = models.ImageField(upload_to='profile_pics/', blank=False, null=False,
-                                    default='default-profile-pic.png')
+                                    default='default-profile-pic_itkdbu.png')
 
     class Meta:
         verbose_name = 'Profile'

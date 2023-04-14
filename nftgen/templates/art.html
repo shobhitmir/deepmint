@@ -96,10 +96,17 @@
     function download_image()
     {
       var imageUrl = "{{art.gen_image.url}}";
-      var link = document.createElement("a");
-      link.download = "generated_art.jpg";
-      link.href = imageUrl;
-      link.click();
+       fetch(imageUrl)
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'generated_art.jpg');
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      });
     }
   </script>
 
@@ -183,7 +190,7 @@
           <br>
           <div class="btn-group ml-2" role="group" aria-label="Button group with nested dropdown">
             <button type="button" class="btn btn-default" onclick="download_image()">Download Art</button>
-            <button onclick="location.href='{% url 'nftgen' description=art.prompt image=gen_img_path|urlencode %}'"
+            <button onclick="location.href='{% url 'nftgen' art_id=art.id %}'"
             type="button" class="btn btn-default">Create NFT</button>
             <!-- <button type="button" class="btn btn-default">Post</button> -->
           </div>

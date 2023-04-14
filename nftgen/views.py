@@ -119,6 +119,7 @@ def generate_art(prompt, prompt_strength, init_image, seed, iters):
 
     init_img_file = tempfile.NamedTemporaryFile(
         delete=False, dir=os.path.join(BASE_DIR, 'nftgen', 'temp'))
+
     for chunk in init_image.chunks():
         init_img_file.write(chunk)
 
@@ -140,6 +141,11 @@ def generate_art(prompt, prompt_strength, init_image, seed, iters):
     init_img_file.close()
 
     return gen_img_url, init_img_file
+
+
+def create_new_art(init_img, digital_art, art_num):
+    digital_art.init_image.save(
+        'initimg-'+str(art_num)+'.png', init_img)
 
 
 @login_required
@@ -178,11 +184,6 @@ def artgen_view(request):
                                   image_strength=img_strength, prompt=prompt,
                                   seed=seed)
 
-        if 'initimg' in request.FILES:
-            digital_art = Digital_Art(owner=request.user, iterations=iters,
-                                      image_strength=img_strength, init_image=init_img,
-                                      prompt=prompt, seed=seed)
-
         start_time = time.time()
         img_url, init_img_file = generate_art(prompt, prompt_strength,
                                               digital_art.init_image, seed, iters)
@@ -190,14 +191,18 @@ def artgen_view(request):
 
         run_time = end_time - start_time
         digital_art.run_time = run_time
-        gen_img = requests.get(img_url).content
 
+        gen_img = requests.get(img_url).content
         gen_img = ContentFile(gen_img, name='genimg-'+str(art_num)+'.png')
+
         digital_art.gen_image.save(
             'genimg-'+str(art_num)+'.png', gen_img)
-        digital_art.save()
+
+        if 'initimg' in request.FILES:
+            create_new_art(init_img, digital_art, art_num)
 
         os.remove(init_img_file.name)
+        digital_art.save()
         return redirect(art_view, digital_art.id)
 
 
@@ -245,15 +250,22 @@ def profile_view(request):
 
 
 @login_required
-def nftgen_view(request, description='', image=''):
+def nftgen_view(request, art_id=None):
     if request.method == 'GET':
         PINATA_API_KEY = os.environ.get('PINATA_API_KEY')
         PINATA_API_SECRET = os.environ.get('PINATA_API_SECRET')
         DEEPMINT_NFT_ADDRESS = os.environ.get('DEEPMINT_NFT_ADDRESS')
+
         gen_img_path = ''
-        if image != '':
-            gen_img_path = '/media/generated_images/' + unquote(image)
+        description = ''
+
         collections = NFT_Collection.objects.filter(owner=request.user)
+        art = Digital_Art.objects.filter(id=art_id).first()
+
+        if art:
+            description = art.prompt
+            gen_img_path = art.gen_image.url
+
         return render(request, 'nftgen.html', {'nft_collections': collections,
                                                'nft_description': description,
                                                'nft_image': gen_img_path,
