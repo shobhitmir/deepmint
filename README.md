@@ -89,7 +89,7 @@ DeepMint is a Decentralized Application (DApp) that enables users to mint Non-Fu
 <br>
 
 
-### Viewing an NFT Collection on OpenSea
+### Viewing the NFT Collection on OpenSea
 ![image](https://github.com/shobhitmir/deepmint/assets/73059947/bdffa1b6-39de-4189-91de-c50d8c329be4)
 <br>
 <br>
