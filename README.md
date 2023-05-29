@@ -14,7 +14,7 @@ DeepMint is a Decentralized Application (DApp) that enables users to mint Non-Fu
     <br>
     
 3. Mint NFTs
-    * Users can specify metadata (name, description, image) of an NFT and also select an NFT Collection in which to include the minted NFT. Then the deployed ERC721 smart contract's method is called to mint the       NFT. This NFT can be viewed on platforms such as OpenSea and can be bought/sold
+    * Users can specify metadata (name, description, image) of an NFT and also select an NFT Collection in which to include the minted NFT. Then the deployed ERC721 smart contract's method is called to mint the       NFT. This NFT can then be viewed/bought/sold on platforms such as OpenSea
     <br>
     
 4. Secure Authentication
