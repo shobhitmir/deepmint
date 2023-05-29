@@ -37,7 +37,7 @@ DeepMint is a Decentralized Application (DApp) that enables users to mint Non-Fu
 
 ## Installation
 1. Instructions to visit web application
-   * Visit link : https://deepmint.up.railway.app/  OR https://deepmint.onrender.com/
+   * Visit link : https://deepmint.up.railway.app/  OR  https://deepmint.onrender.com/
    * Connect Metamask wallet with the DApp
    * Switch to Goerli Test Network in Metamask as smart contract has been deployed on Goerli Test Network
 
